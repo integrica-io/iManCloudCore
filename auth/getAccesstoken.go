@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-
+	
 	"iManCloudCore/internal"
 )
 
@@ -73,9 +73,9 @@ func (grant GrantType) IsValid() bool{
 	return false
 }
 
-func GetAccessToken(ctx context.Context, hostname string, grant GrantType, cfg *GetAccessTokenCfg) error {
+func (client *Client) GetAccessToken(ctx context.Context, grant GrantType, cfg *GetAccessTokenCfg) (error) {
+	endpoint := client.BaseUrl.JoinPath("auth","oauth2","token")
 
-	endpoint := fmt.Sprintf("https://%s/auth/oauth2/token", hostname)
 	data := url.Values{}
 	
 	if !grant.IsValid(){
@@ -99,14 +99,14 @@ func GetAccessToken(ctx context.Context, hostname string, grant GrantType, cfg *
 			data.Set("assertion", cfg.Assertion)
 	}
 
-	client := &http.Client{}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, strings.NewReader(data.Encode()))
+	reqClient := &http.Client{}
+	req, err := http.NewRequestWithContext(ctx, "POST", endpoint.String(), strings.NewReader(data.Encode()))
 	if err != nil {
 		return err
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-	resp, err := client.Do(req)
+	resp, err := reqClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -127,6 +127,11 @@ func GetAccessToken(ctx context.Context, hostname string, grant GrantType, cfg *
 	if err := json.Unmarshal(body, &tokenResp); err != nil {
 		return fmt.Errorf("GetAccessToken, unmarshal response, %s", err)
 	}
+
+	client.AccessToken = tokenResp.AccessToken
+	client.ExpiresIn = tokenResp.ExpiresIn
+	client.RefreshToken = tokenResp.RefreshToken
+	client.TokenType = tokenResp.TokenType
 	
 	return nil
 }
