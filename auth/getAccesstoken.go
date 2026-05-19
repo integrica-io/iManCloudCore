@@ -73,8 +73,8 @@ func (grant GrantType) IsValid() bool{
 	return false
 }
 
-func (client *Client) GetAccessToken(ctx context.Context, grant GrantType, cfg *GetAccessTokenCfg) (error) {
-	endpoint := client.BaseUrl.JoinPath("auth","oauth2","token")
+func (c *Client) GetAccessToken(ctx context.Context, grant GrantType, cfg *GetAccessTokenCfg) (error) {
+	endpoint := c.BaseUrl.JoinPath("auth","oauth2","token")
 
 	data := url.Values{}
 	
@@ -128,10 +128,10 @@ func (client *Client) GetAccessToken(ctx context.Context, grant GrantType, cfg *
 		return fmt.Errorf("GetAccessToken, unmarshal response, %s", err)
 	}
 
-	client.AccessToken = tokenResp.AccessToken
-	client.ExpiresIn = tokenResp.ExpiresIn
-	client.RefreshToken = tokenResp.RefreshToken
-	client.TokenType = tokenResp.TokenType
+	c.AccessToken = tokenResp.AccessToken
+	c.ExpiresIn = tokenResp.ExpiresIn
+	c.RefreshToken = tokenResp.RefreshToken
+	c.TokenType = tokenResp.TokenType
 	
 	return nil
 }
