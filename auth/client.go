@@ -7,14 +7,11 @@ import (
 
 type Client struct {
 	BaseUrl 	 *url.URL
-	CustomerNo	 string
-	AccessToken  string 
-	ExpiresIn    string 
-	RefreshToken string 
-	TokenType    string 
+	TokenCfg 	 AccessTokenCfg
+	Token	 	 *Token	
 }
 
-func NewClient(hostname string, customerNo string)(*Client, error){
+func NewClient(hostname string, tokenCfg *AccessTokenCfg)(*Client, error){
 	url, err := url.Parse(fmt.Sprintf("https://%s", hostname))
 	if err != nil {
 		return nil, err
@@ -22,6 +19,6 @@ func NewClient(hostname string, customerNo string)(*Client, error){
 	
 	return &Client{
 		BaseUrl: url,
-		CustomerNo: customerNo,
+		TokenCfg: *tokenCfg,
 	}, nil
 }
