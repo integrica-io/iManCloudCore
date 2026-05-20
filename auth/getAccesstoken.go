@@ -84,6 +84,8 @@ func (grant GrantType) IsValid() bool{
 func (c *Client) GetAccessToken(ctx context.Context) (error) {
 	endpoint := c.BaseUrl.JoinPath("auth","oauth2","token")
 	data := url.Values{}
+
+	data.Set("grant_type", string(c.TokenCfg.Grant))
 	
 	if c.TokenCfg.Grant == ""{
 		return fmt.Errorf("empty grant type") 
