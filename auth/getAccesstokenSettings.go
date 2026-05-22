@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+	"iManCloudCore/internal"
 )
 
 type GetAccessTokenSettingsOutput struct {
@@ -12,7 +13,7 @@ type GetAccessTokenSettingsOutput struct {
 	} `json:"data"`
 }
 
-func (c *Client) GetAccessTokenSettings(ctx context.Context) error {
+func GetAccessTokenSettings(ctx context.Context, c *internal.Client) error {
 	if c.Token == nil{
 		return fmt.Errorf("access token required")
 	}	

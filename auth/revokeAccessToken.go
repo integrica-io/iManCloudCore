@@ -3,13 +3,13 @@ package auth
 import (
 	"context"
 	"fmt"
-	"strings"
+	"iManCloudCore/internal"
 	"net/http"
 	"net/url"
-	"iManCloudCore/internal"
+	"strings"
 )
 
-func (c *Client) RevokeClientAccessToken(ctx context.Context) error {
+func RevokeClientAccessToken(ctx context.Context, c *internal.Client) error {
 	endpoint := c.BaseUrl.JoinPath("auth","oauth2","revoke-token")
 
 	if c.Token == nil{
@@ -41,7 +41,7 @@ func (c *Client) RevokeClientAccessToken(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) RevokeAccessToken(ctx context.Context, accessToken string) error {
+func RevokeAccessToken(ctx context.Context, c *internal.Client, accessToken string) error {
 	endpoint := c.BaseUrl.JoinPath("auth","oauth2","revoke-token")
 	data := url.Values{}
 
