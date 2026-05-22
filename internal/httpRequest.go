@@ -106,8 +106,7 @@ func (b *HttpRequestBuilder) Exec() error {
 			req.Body = io.NopCloser(strings.NewReader(b.ReqForm.Encode()))
 			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 		case b.ReqBody != nil:
-			reqCfg.ReqBody = *b.ReqBody
-			req.Body = io.NopCloser(bytes.NewReader(reqCfg.ReqBody))
+			req.Body = io.NopCloser(bytes.NewReader(*b.ReqBody))
 	}
 
 	if b.ReqHeaders != nil {
