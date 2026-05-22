@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -95,19 +96,18 @@ func (b *HttpRequestBuilder) Exec() error {
 	}
 	reqCfg.ReqMethod = *b.ReqMethod
 
-	var body io.Reader
-	req, err := http.NewRequestWithContext(reqCfg.ReqCtx, string(reqCfg.ReqMethod), reqCfg.ReqUrl.String(), body)
+	req, err := http.NewRequestWithContext(reqCfg.ReqCtx, string(reqCfg.ReqMethod), reqCfg.ReqUrl.String(), http.NoBody)
 	if err != nil{
 		return err
 	}
-	
+
 	switch {
 		case b.ReqForm != nil:
-			body = strings.NewReader(b.ReqForm.Encode())
+			req.Body = io.NopCloser(strings.NewReader(b.ReqForm.Encode()))
 			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 		case b.ReqBody != nil:
 			reqCfg.ReqBody = *b.ReqBody
-			body = strings.NewReader(string(reqCfg.ReqBody))
+			req.Body = io.NopCloser(bytes.NewReader(reqCfg.ReqBody))
 	}
 
 	if b.ReqHeaders != nil {

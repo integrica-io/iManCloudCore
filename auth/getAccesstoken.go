@@ -17,7 +17,6 @@ func GetAccessToken(ctx context.Context, c *internal.Client) (error) {
 	if c.TokenCfg.Grant == ""{
 		return fmt.Errorf("empty grant type") 
 	}
-	fmt.Println("token not empty")
 
 	if err := c.TokenCfg.IsValid(); err != nil {
 		return fmt.Errorf("GetAccessToken, tokenCfg.isValid, %s", err)
