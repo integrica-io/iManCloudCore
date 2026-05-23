@@ -13,9 +13,10 @@ type GetAccessTokenSettingsOutput struct {
 	} `json:"data"`
 }
 
-func GetAccessTokenSettings(ctx context.Context, c *internal.Client) error {
-	if c.Token == nil{
+func GetAccessTokenSettings(ctx context.Context, client *internal.Client) error {
+	if client.Token == nil{
 		return fmt.Errorf("access token required")
-	}	
+	}
+	
 	return nil
 }

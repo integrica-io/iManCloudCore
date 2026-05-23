@@ -7,15 +7,15 @@ import (
 	"net/url"
 )
 
-func RevokeClientAccessToken(ctx context.Context, c *internal.Client) error {
-	endpoint := c.BaseUrl.JoinPath("auth","oauth2","revoke-token")
+func RevokeClientAccessToken(ctx context.Context, client *internal.Client) error {
+	endpoint := client.BaseUrl.JoinPath("auth","oauth2","revoke-token")
 
-	if c.Token == nil{
+	if client.Token == nil{
 		return fmt.Errorf("no access token available to revoke")
 	}
 
 	data := url.Values{}
-	data.Add("access_token", c.Token.AccessToken)
+	data.Add("access_token", client.Token.AccessToken)
 
 	req := internal.HttpRequestBuilder{}
 
@@ -28,10 +28,10 @@ func RevokeClientAccessToken(ctx context.Context, c *internal.Client) error {
 	return nil
 }
 
-func RevokeAccessToken(ctx context.Context, c *internal.Client, accessToken string) error {
-	endpoint := c.BaseUrl.JoinPath("auth","oauth2","revoke-token")
-	data := url.Values{}
+func RevokeAccessToken(ctx context.Context, client *internal.Client, accessToken string) error {
+	endpoint := client.BaseUrl.JoinPath("auth","oauth2","revoke-token")
 
+	data := url.Values{}
 	data.Add("access_token", accessToken)
 
 	req := internal.HttpRequestBuilder{}
