@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 	"iManCloudCore/internal"
-	"net/http"
 	"net/url"
-	"strings"
 )
 
 func RevokeClientAccessToken(ctx context.Context, c *internal.Client) error {
@@ -18,24 +16,13 @@ func RevokeClientAccessToken(ctx context.Context, c *internal.Client) error {
 
 	data := url.Values{}
 	data.Add("access_token", c.Token.AccessToken)
-	
-	reqClient := &http.Client{}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint.String(), strings.NewReader(data.Encode()))
-	if err != nil {
-		return err
-	}
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-	resp, err := reqClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
+	req := internal.HttpRequestBuilder{}
 
-	okResp := resp.StatusCode >= 200 || resp.StatusCode < 300
-	if !okResp{
-		errMessage := internal.HttpErrorHandler(resp)
-		return fmt.Errorf("%s", errMessage)
+	req.Context(ctx).Url(*endpoint).Method(internal.Post).Form(data)
+
+	if err := req.Exec(); err != nil {
+		return err
 	}
 
 	return nil
@@ -47,23 +34,12 @@ func RevokeAccessToken(ctx context.Context, c *internal.Client, accessToken stri
 
 	data.Add("access_token", accessToken)
 
-	reqClient := &http.Client{}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint.String(), strings.NewReader(data.Encode()))
-	if err != nil {
-		return err
-	}
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req := internal.HttpRequestBuilder{}
 
-	resp, err := reqClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
+	req.Context(ctx).Url(*endpoint).Method(internal.Post).Form(data)
 
-	okResp := resp.StatusCode >= 200 || resp.StatusCode < 300
-	if !okResp{
-		errMessage := internal.HttpErrorHandler(resp)
- 		return fmt.Errorf("%s", errMessage)
+	if err := req.Exec(); err != nil {
+		return err
 	}
 	return nil
 }
