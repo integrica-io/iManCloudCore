@@ -3,8 +3,6 @@ package customers
 import (
 	"context"
 	"iManCloudCore/internal"
-	"log/slog"
-	"os"
 )
 
 func PingServer(ctx context.Context, c *internal.Client) error {
