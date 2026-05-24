@@ -21,7 +21,7 @@ func RevokeClientAccessToken(ctx context.Context, client *internal.Client) error
 
 	req.Context(ctx).Url(*endpoint).Method(internal.Post).Form(data)
 
-	if err := req.Exec(); err != nil {
+	if err := client.Req(req); err != nil {
 		return err
 	}
 
@@ -38,7 +38,7 @@ func RevokeAccessToken(ctx context.Context, client *internal.Client, accessToken
 
 	req.Context(ctx).Url(*endpoint).Method(internal.Post).Form(data)
 
-	if err := req.Exec(); err != nil {
+	if err := client.Req(req); err != nil {
 		return err
 	}
 	return nil

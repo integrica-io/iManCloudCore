@@ -1,7 +1,8 @@
 package types
 
-import(
+import (
 	"fmt"
+	"time"
 )
 
 type GrantType string
@@ -18,6 +19,7 @@ type Token struct {
 	ExpiresIn    int `json:"expires_in"`
 	RefreshToken string `json:"refresh_token"`
 	TokenType    string `json:"token_type"`
+	TokenExpiry	 time.Time
 }
 
 type AccessTokenCfg struct{

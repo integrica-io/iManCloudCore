@@ -6,33 +6,34 @@ import (
 	"iManCloudCore/internal"
 	"iManCloudCore/types"
 	"net/url"
+	"time"
 )
 
-func GetAccessToken(ctx context.Context, c *internal.Client) (error) {
-	endpoint := c.BaseUrl.JoinPath("auth","oauth2","token")
+func GetAccessToken(ctx context.Context, client *internal.Client) (error) {
+	endpoint := client.BaseUrl.JoinPath("auth","oauth2","token")
 	data := url.Values{}
 
-	data.Set("grant_type", string(c.TokenCfg.Grant))
+	data.Set("grant_type", string(client.TokenCfg.Grant))
 	
-	if c.TokenCfg.Grant == ""{
+	if client.TokenCfg.Grant == ""{
 		return fmt.Errorf("empty grant type") 
 	}
 
-	if err := c.TokenCfg.IsValid(); err != nil {
+	if err := client.TokenCfg.IsValid(); err != nil {
 		return fmt.Errorf("GetAccessToken, tokenCfg.isValid, %s", err)
 	}
 
-	if c.TokenCfg.Grant != types.RefreshToken{
-		data.Set("client_id", c.TokenCfg.ClientId)
-		data.Set("client_secret", c.TokenCfg.ClientSecret)
+	if client.TokenCfg.Grant != types.RefreshToken{
+		data.Set("client_id", client.TokenCfg.ClientId)
+		data.Set("client_secret", client.TokenCfg.ClientSecret)
 	}
 		
-	switch c.TokenCfg.Grant{
+	switch client.TokenCfg.Grant{
 		case types.Password:
-			data.Set("password", c.TokenCfg.Password)
-			data.Set("username", c.TokenCfg.Username)
+			data.Set("password", client.TokenCfg.Password)
+			data.Set("username", client.TokenCfg.Username)
 		case types.Saml2Bearer:
-			data.Set("assertion", c.TokenCfg.Assertion)
+			data.Set("assertion", client.TokenCfg.Assertion)
 	}
 
 	req := internal.HttpRequestBuilder{}
@@ -41,11 +42,12 @@ func GetAccessToken(ctx context.Context, c *internal.Client) (error) {
 
 	req.Context(ctx).Url(*endpoint).Method(internal.Post).ToJson(&GetAccesstokenOutput).Form(data)
 
-	if err := req.Exec(); err != nil {
+	if err := client.Req(req); err != nil {
 		return err
 	}
 	
-	c.Token = &GetAccesstokenOutput
+	client.Token = &GetAccesstokenOutput
+	client.Token.TokenExpiry = time.Now().Add(time.Second * time.Duration(client.Token.ExpiresIn))
 	
 	return nil
 }
