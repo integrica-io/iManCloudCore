@@ -15,9 +15,7 @@ func PingServer(ctx context.Context, c *internal.Client) error {
 	req.Url(*endpoint).Method(internal.Get).Context(ctx)
 
 	if err := req.Exec(); err != nil {
-		slog.Error("error","error", err)
-		os.Exit(1)
-	}
-	
+		return err
+	}	
 	return nil	
 }
