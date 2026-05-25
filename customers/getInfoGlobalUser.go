@@ -54,7 +54,6 @@ func GetInfoGlobalUser(ctx context.Context, client *internal.Client, userId stri
 		endpoint.RawQuery = values.Encode()
 	}
 
-	fmt.Println(endpoint)
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)
 
