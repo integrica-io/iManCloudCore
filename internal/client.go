@@ -77,6 +77,7 @@ func (client *Client) Req(b HttpRequestBuilder) error {
 				return err
 			}			
 		}
+		req.Header.Set("X-Auth-Token", client.Token.AccessToken)
 	}
 
  	resp, err := reqClient.Do(req)
