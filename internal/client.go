@@ -113,6 +113,7 @@ func (client *Client) RefreshAccessToken(ctx context.Context) (error) {
 	endpoint := client.BaseUrl.JoinPath("auth","oauth2","token")
 	data := url.Values{}
 	data.Set("grant_type","refresh_token")
+	data.Set("refresh_token", client.Token.RefreshToken)
 	
 	req := HttpRequestBuilder{}
 
