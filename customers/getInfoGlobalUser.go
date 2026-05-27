@@ -43,10 +43,7 @@ func GetInfoGlobalUser(ctx context.Context, client *internal.Client, userId stri
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "users", userId)
 
 	if options != nil {
-		opt := GetInfoGlobalUserOptions{
-			IncludeLibraries: true,
-		}
-		values, err := query.Values(opt)
+		values, err := query.Values(options)
 		if err != nil {
 			return data, err
 		}
