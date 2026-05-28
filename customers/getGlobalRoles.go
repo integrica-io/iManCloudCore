@@ -25,7 +25,7 @@ type GetGlobalRolesOutput struct {
 type GetGlobalRolesOptions struct{
 	Limit int `url:"limit,omitempty"`
 	Offset int `url:"offset,omitempty"`
-	query string `url:"query,omitempty"`
+	Query string `url:"query,omitempty"`
 	QueryMatchType QueryMatchType `url:"query_match_type,omitempty"`
 	Total	bool `url:"total"`
 }
