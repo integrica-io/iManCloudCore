@@ -30,14 +30,6 @@ type GetGlobalRolesOptions struct{
 	Total	bool `url:"total"`
 }
 
-type QueryMatchType string
-
-const (
-	Contains 	QueryMatchType = "contains"
-	StartsWith 	QueryMatchType = "starts_with"
-)
-
-
 func GetGlobalRoles(ctx context.Context, client *internal.Client, options *GetGlobalRolesOptions)(GetGlobalRolesOutput, error){
 
 	var data GetGlobalRolesOutput
