@@ -2,131 +2,52 @@ package auth
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"net/url"
-	"strings"
-
 	"iManCloudCore/internal"
+	"iManCloudCore/types"
+	"net/url"
+	"time"
 )
 
-const (
-	AuthorizationCode GrantType = "authorization_code"
-	Password          GrantType = "password"
-	RefreshToken      GrantType = "refresh_token"
-	Saml2Bearer       GrantType = "urn:ietf:params:oauth:grant-type:saml2-bearer"
-)
-
-type GetAccessTokenResponse struct {
-	AccessToken  string `json:"access_token"`
-	ExpiresIn    string `json:"expires_in"`
-	RefreshToken string `json:"refresh_token"`
-	TokenType    string `json:"token_type"`
-}
-
-type GetAccessTokenCfg struct{
-	Assertion 		string
-	ClientId		string
-	ClientSecret	string
-	CustomerId		string
-	Password		string
-	Username		string
-}
-
-type GrantType string
-
-func (cfg *GetAccessTokenCfg) isValid(grant GrantType) error {
-	if grant != RefreshToken{
-		if cfg.ClientId == ""{
-			return fmt.Errorf("client_id required for %s grant type", grant)
-		}
-		if cfg.ClientSecret == ""{
-			return fmt.Errorf("client_secret required for %s grant type", grant)
-		}
-	}
-	if grant == Saml2Bearer { 
-		if cfg.CustomerId == ""{
-			return fmt.Errorf("customer_id required for %s grant type", grant)
-		}
-		if cfg.Assertion == ""{
-			return fmt.Errorf("assertion required for %s grant type", grant)
-		}
-	}
-	if grant == Password{
-		if cfg.Password == ""{
-			return fmt.Errorf("password required for %s grant type", grant)	
-		}
-		if cfg.Username == ""{
-			return fmt.Errorf("username required for %s grant type", grant)
-		}
-	}
-	return nil
-}
-
-func (grant GrantType) IsValid() bool{
-	switch grant {
-		case AuthorizationCode, Password, RefreshToken, Saml2Bearer:
-			return true
-	}
-	return false
-}
-
-func GetAccessToken(ctx context.Context, hostname string, grant GrantType, cfg *GetAccessTokenCfg) error {
-
-	endpoint := fmt.Sprintf("https://%s/auth/oauth2/token", hostname)
+func GetAccessToken(ctx context.Context, client *internal.Client) (error) {
+	endpoint := client.BaseUrl.JoinPath("auth","oauth2","token")
 	data := url.Values{}
+
+	data.Set("grant_type", string(client.TokenCfg.Grant))
 	
-	if !grant.IsValid(){
-		return fmt.Errorf("invalid grant type") 
+	if client.TokenCfg.Grant == ""{
+		return fmt.Errorf("empty grant type") 
 	}
 
-	if err := cfg.isValid(grant); err != nil {
-		return fmt.Errorf("GetAccessToken, cfg is valid, %s", err)
+	if err := client.TokenCfg.IsValid(); err != nil {
+		return fmt.Errorf("GetAccessToken, tokenCfg.isValid, %s", err)
 	}
 
-	if grant != RefreshToken{
-		data.Set("client_id", cfg.ClientId)
-		data.Set("client_secret", cfg.ClientSecret)
+	if client.TokenCfg.Grant != types.RefreshToken{
+		data.Set("client_id", client.TokenCfg.ClientId)
+		data.Set("client_secret", client.TokenCfg.ClientSecret)
 	}
 		
-	switch grant{
-		case Password:
-			data.Set("password", cfg.Password)
-			data.Set("username", cfg.Username)
-		case Saml2Bearer:
-			data.Set("assertion", cfg.Assertion)
+	switch client.TokenCfg.Grant{
+		case types.Password:
+			data.Set("password", client.TokenCfg.Password)
+			data.Set("username", client.TokenCfg.Username)
+		case types.Saml2Bearer:
+			data.Set("assertion", client.TokenCfg.Assertion)
 	}
 
-	client := &http.Client{}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, strings.NewReader(data.Encode()))
-	if err != nil {
+	req := internal.HttpRequestBuilder{}
+
+	var GetAccesstokenOutput types.Token
+
+	req.Context(ctx).Url(*endpoint).Method(internal.Post).ToJson(&GetAccesstokenOutput).Form(data)
+
+	if err := client.Req(req); err != nil {
 		return err
 	}
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	okResp := resp.StatusCode >= 200 || resp.StatusCode < 300
-	if !okResp{
-		errMessage := internal.HttpErrorHandler(resp)
-		return fmt.Errorf("%s", errMessage)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("GetAccesstoken, readBody, %s", err)
-	}
-
-	var tokenResp GetAccessTokenResponse
-	if err := json.Unmarshal(body, &tokenResp); err != nil {
-		return fmt.Errorf("GetAccessToken, unmarshal response, %s", err)
-	}
+	
+	client.Token = &GetAccesstokenOutput
+	client.Token.TokenExpiry = time.Now().Add(time.Second * time.Duration(client.Token.ExpiresIn))
 	
 	return nil
 }
