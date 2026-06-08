@@ -1,7 +1,7 @@
 package customers
 
 import (
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
 	"context"
 	"time"
 

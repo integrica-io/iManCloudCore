@@ -1,4 +1,4 @@
-module iManCloudCore
+module github.com/integrica-io/iManCloudCore
 
 go 1.26.3
 

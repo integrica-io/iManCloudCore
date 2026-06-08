@@ -3,7 +3,7 @@ package multiLibrary
 import (
 	"time"
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
 
 	"github.com/google/go-querystring/query"	
 )

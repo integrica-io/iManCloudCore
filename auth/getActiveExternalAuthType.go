@@ -2,7 +2,7 @@ package auth
 
 import (
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type GetActiveExternalAuthTypeOutput struct {
