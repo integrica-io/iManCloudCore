@@ -3,8 +3,8 @@ package auth
 import (
 	"context"
 	"fmt"
-	"iManCloudCore/internal"
-	"iManCloudCore/types"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/types"
 	"net/url"
 	"time"
 )

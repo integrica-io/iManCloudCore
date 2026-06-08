@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"iManCloudCore/types"
+	"github.com/integrica-io/iManCloudCore/types"
 	"io"
 	"net/http"
 	"net/url"

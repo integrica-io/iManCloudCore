@@ -2,7 +2,7 @@ package customers
 
 import (
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 func PingServer(ctx context.Context, client *internal.Client) error {
