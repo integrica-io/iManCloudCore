@@ -2,8 +2,8 @@ package customers
 
 import (
 	"context"
-	"iManCloudCore/internal"
-
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 	"github.com/google/go-querystring/query"	
 )
 
@@ -20,7 +20,7 @@ type GetUsersGlobalAppsOptions struct {
     Total bool `url:"total,omitempty"`
 }
 
-func GetUsersGlobalApps(ctx context.Context, client *internal.Client, userId string, options *GetUsersGlobalAppsOptions)(GetUsersGlobalAppsOutput, error){
+func GetUsersGlobalApps(ctx context.Context, client *client.Client, userId string, options *GetUsersGlobalAppsOptions)(GetUsersGlobalAppsOutput, error){
 
 	var data GetUsersGlobalAppsOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "users", userId, "apps")
