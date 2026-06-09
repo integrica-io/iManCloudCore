@@ -2,7 +2,8 @@ package customers
 
 import (
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 
 	"github.com/google/go-querystring/query"	
 )
@@ -24,7 +25,7 @@ type GetSecurityTemplatesOptions struct{
 	Total int `url:"total,omitempty"`
 }
 
-func GetSecurityTemplates(ctx context.Context, client *internal.Client, options *GetSecurityTemplatesOptions)(GetSecurityTemplatesOutput, error){
+func GetSecurityTemplates(ctx context.Context, client *client.Client, options *GetSecurityTemplatesOptions)(GetSecurityTemplatesOutput, error){
 	var data GetSecurityTemplatesOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "security-templates")
 

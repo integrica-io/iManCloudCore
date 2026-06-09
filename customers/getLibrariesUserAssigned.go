@@ -2,7 +2,8 @@ package customers
 
 import (
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 	"github.com/google/go-querystring/query"
 )
 
@@ -21,7 +22,7 @@ type GetLibrariesUserAssignedOptions struct{
 	Total 	bool	`url:"total"`
 }
 
-func GetLibrariesUserAssigned(ctx context.Context, client *internal.Client, userId string, options *GetInfoGlobalUserOptions)(GetLibrariesUserAssignedOutput, error){
+func GetLibrariesUserAssigned(ctx context.Context, client *client.Client, userId string, options *GetInfoGlobalUserOptions)(GetLibrariesUserAssignedOutput, error){
 	var data GetLibrariesUserAssignedOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "users", userId, "libraries")
 

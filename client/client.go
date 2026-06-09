@@ -1,11 +1,12 @@
-package internal
+package client
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"iManCloudCore/types"
+	"github.com/integrica-io/iManCloudCore/types"
+	"github.com/integrica-io/iManCloudCore/internal"
 	"io"
 	"net/http"
 	"net/url"
@@ -31,8 +32,8 @@ func NewClient(hostname string, clientCfg *types.AccessTokenCfg)(*Client, error)
 	}, nil
 }
 
-func (client *Client) Req(b HttpRequestBuilder) error {
-	reqCfg := HttpRequestCfg{}
+func (client *Client) Req(b internal.HttpRequestBuilder) error {
+	reqCfg := internal.HttpRequestCfg{}
 	reqClient := &http.Client{}
 	
 	//Validate required parameters
@@ -88,7 +89,7 @@ func (client *Client) Req(b HttpRequestBuilder) error {
 
 	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !respOk {
-		return HttpErrorHandler(resp)
+		return internal.HttpErrorHandler(resp)
 	}
 
 	if b.ReqToJson != nil {
@@ -115,11 +116,11 @@ func (client *Client) RefreshAccessToken(ctx context.Context) (error) {
 	data.Set("grant_type","refresh_token")
 	data.Set("refresh_token", client.Token.RefreshToken)
 	
-	req := HttpRequestBuilder{}
+	req := internal.HttpRequestBuilder{}
 
 	var GetAccesstokenOutput types.Token
 
-	req.Context(ctx).Url(*endpoint).Method(Post).ToJson(&GetAccesstokenOutput).Form(data)
+	req.Context(ctx).Url(*endpoint).Method(internal.Post).ToJson(&GetAccesstokenOutput).Form(data)
 
 	if err := client.Req(req); err != nil {
 		return err

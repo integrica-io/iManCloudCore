@@ -2,7 +2,8 @@ package customers
 
 import (
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 
 	"github.com/google/go-querystring/query"	
 )
@@ -30,7 +31,7 @@ type GetGlobalRolesOptions struct{
 	Total	bool `url:"total"`
 }
 
-func GetGlobalRoles(ctx context.Context, client *internal.Client, options *GetGlobalRolesOptions)(GetGlobalRolesOutput, error){
+func GetGlobalRoles(ctx context.Context, client *client.Client, options *GetGlobalRolesOptions)(GetGlobalRolesOutput, error){
 
 	var data GetGlobalRolesOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "roles")

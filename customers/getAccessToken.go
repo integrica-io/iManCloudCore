@@ -3,7 +3,8 @@ package customers
 
 import (
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 )
 
 type GetAccessTokenOutput struct {
@@ -12,7 +13,7 @@ type GetAccessTokenOutput struct {
 	} `json:"data"`
 }
 
-func GetAccessToken(ctx context.Context, client *internal.Client, dialogToken string)(GetAccessTokenOutput, error){
+func GetAccessToken(ctx context.Context, client *client.Client, dialogToken string)(GetAccessTokenOutput, error){
 
 	var data GetAccessTokenOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "dialog-tokens", dialogToken)

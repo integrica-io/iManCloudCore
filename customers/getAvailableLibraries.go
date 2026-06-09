@@ -2,7 +2,8 @@ package customers
 
 import (
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 )
 
 type GetAvailableLibrariesOutput struct {
@@ -13,7 +14,7 @@ type GetAvailableLibrariesOutput struct {
 	} `json:"data"`
 }
 
-func GetAvailableLibraries(ctx context.Context, client *internal.Client)(GetAvailableLibrariesOutput, error){
+func GetAvailableLibraries(ctx context.Context, client *client.Client)(GetAvailableLibrariesOutput, error){
 	endpoint := client.BaseUrl.JoinPath("work", "api", "v2","customers",client.TokenCfg.CustomerId, "libraries")
 	var data GetAvailableLibrariesOutput
 

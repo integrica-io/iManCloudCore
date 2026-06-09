@@ -3,8 +3,9 @@ package customers
 import (
 	"time"
 	"context"
-	"iManCloudCore/internal"
 
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 	"github.com/google/go-querystring/query"	
 )
 
@@ -54,7 +55,7 @@ type SearchGlobalUsersOptions struct {
     Total bool `url:"total,omitempty"`
 }
 
-func SearchGlobalUsers(ctx context.Context, client *internal.Client, options *SearchGlobalUsersOptions)(SearchGlobalUsersOutput, error){
+func SearchGlobalUsers(ctx context.Context, client *client.Client, options *SearchGlobalUsersOptions)(SearchGlobalUsersOutput, error){
 
 	var data SearchGlobalUsersOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "users")

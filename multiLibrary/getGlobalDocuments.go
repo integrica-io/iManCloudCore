@@ -3,7 +3,8 @@ package multiLibrary
 import (
 	"time"
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 
 	"github.com/google/go-querystring/query"	
 )
@@ -148,7 +149,7 @@ type GetGlobalDocumentsOptions struct {
     User string `url:"user,omitempty"`
 }
 
-func GetGlobalDocuments(ctx context.Context, client *internal.Client, customerId string, options *GetGlobalDocumentsOptions)(GetGlobalDocumentsOutput, error){
+func GetGlobalDocuments(ctx context.Context, client *client.Client, customerId string, options *GetGlobalDocumentsOptions)(GetGlobalDocumentsOutput, error){
 
 	var data GetGlobalDocumentsOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "documents")

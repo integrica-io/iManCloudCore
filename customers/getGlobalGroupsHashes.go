@@ -2,7 +2,8 @@ package customers
 
 import (
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 
 	"github.com/google/go-querystring/query"	
 )
@@ -22,7 +23,7 @@ type GetGlobalGroupsHashesOptions struct{
 	Limit int `url:"limit,omitempty"`
 }
 
-func GetGlobalGroupsHashes(ctx context.Context, client *internal.Client, options *GetGlobalGroupsHashesOptions)(GetGlobalGroupsHashesOutput, error){
+func GetGlobalGroupsHashes(ctx context.Context, client *client.Client, options *GetGlobalGroupsHashesOptions)(GetGlobalGroupsHashesOutput, error){
 
 	var data GetGlobalGroupsHashesOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "directory-sync", "groups", "hashes")

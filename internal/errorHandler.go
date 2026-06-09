@@ -3,7 +3,7 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"iManCloudCore/types"
+	"github.com/integrica-io/iManCloudCore/types"
 	"io"
 	"net/http"
 )

@@ -3,13 +3,15 @@ package auth
 import (
 	"context"
 	"fmt"
-	"iManCloudCore/internal"
-	"iManCloudCore/types"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/types"
+	
 	"net/url"
 	"time"
 )
 
-func GetAccessToken(ctx context.Context, client *internal.Client) (error) {
+func GetAccessToken(ctx context.Context, client *client.Client) (error) {
 	endpoint := client.BaseUrl.JoinPath("auth","oauth2","token")
 	data := url.Values{}
 

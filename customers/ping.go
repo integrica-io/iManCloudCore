@@ -2,10 +2,11 @@ package customers
 
 import (
 	"context"
-	"iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 )
 
-func PingServer(ctx context.Context, client *internal.Client) error {
+func PingServer(ctx context.Context, client *client.Client) error {
 	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "ping")
 	
 	req := internal.HttpRequestBuilder{}
