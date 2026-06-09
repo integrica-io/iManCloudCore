@@ -2,6 +2,7 @@ package customers
 
 import (
 	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 	"context"
 	"time"
 
@@ -59,7 +60,7 @@ type GetRegisteredAppsOutput struct {
 	TotalCount int `json:"total_count"`
 }
 
-func GetRegisteredApps(ctx context.Context, client *internal.Client, options *GetRegisteredAppsOptions)(GetRegisteredAppsOutput, error){
+func GetRegisteredApps(ctx context.Context, client *client.Client, options *GetRegisteredAppsOptions)(GetRegisteredAppsOutput, error){
 	var data GetRegisteredAppsOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "apps")
 

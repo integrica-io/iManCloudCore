@@ -3,6 +3,7 @@ package customers
 import (
 	"context"
 	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 )
 
 type GetLibraryOperationsOutput struct {
@@ -69,7 +70,7 @@ type GetLibraryOperationsOutput struct {
 	} `json:"data"`
 }
 
-func GetLibraryOperations(ctx context.Context, client *internal.Client, library string)(GetLibraryOperationsOutput, error){
+func GetLibraryOperations(ctx context.Context, client *client.Client, library string)(GetLibraryOperationsOutput, error){
 	var data GetLibraryOperationsOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", library, "operations")
 

@@ -3,6 +3,7 @@ package customers
 import (
 	"context"
 	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 
 	"github.com/google/go-querystring/query"	
 )
@@ -19,7 +20,7 @@ type GetIDPSettingsOptions struct{
 	Limit int `url:"limit,omitempty"`
 }
 
-func GetIDPSettings(ctx context.Context, client *internal.Client, options *GetIDPSettingsOptions)(GetIDPSettingsOutput, error){
+func GetIDPSettings(ctx context.Context, client *client.Client, options *GetIDPSettingsOptions)(GetIDPSettingsOutput, error){
 	var data GetIDPSettingsOutput
 	endpoint := client.BaseUrl.JoinPath("platform","api","v2","customers",client.TokenCfg.CustomerId, "settings", "system", "idp")
 

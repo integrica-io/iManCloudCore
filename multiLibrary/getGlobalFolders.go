@@ -4,6 +4,7 @@ import (
 	"time"
 	"context"
 	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 
 	"github.com/google/go-querystring/query"	
 )
@@ -48,7 +49,7 @@ type GetGlobalFoldersOptions struct {
     Total bool `url:"total,omitempty"`
 }
 
-func GetGlobalFolders(ctx context.Context, client *internal.Client, customerId string, options *GetGlobalFoldersOptions)(GetGlobalFoldersOutput, error){
+func GetGlobalFolders(ctx context.Context, client *client.Client, customerId string, options *GetGlobalFoldersOptions)(GetGlobalFoldersOutput, error){
 
 	var data GetGlobalFoldersOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "folders")
