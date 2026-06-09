@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 	"net/url"
 )
 
-func RevokeClientAccessToken(ctx context.Context, client *internal.Client) error {
+func RevokeClientAccessToken(ctx context.Context, client *client.Client) error {
 	endpoint := client.BaseUrl.JoinPath("auth","oauth2","revoke-token")
 
 	if client.Token == nil{
@@ -28,7 +29,7 @@ func RevokeClientAccessToken(ctx context.Context, client *internal.Client) error
 	return nil
 }
 
-func RevokeAccessToken(ctx context.Context, client *internal.Client, accessToken string) error {
+func RevokeAccessToken(ctx context.Context, client *client.Client, accessToken string) error {
 	endpoint := client.BaseUrl.JoinPath("auth","oauth2","revoke-token")
 
 	data := url.Values{}

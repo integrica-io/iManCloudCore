@@ -4,6 +4,7 @@ import (
 	"time"
 	"context"
 	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 
 	"github.com/google/go-querystring/query"	
 )
@@ -116,7 +117,7 @@ type SearchWorkspacesOptions struct {
     Total bool `url:"total,omitempty"`
 }
 
-func SearchWorkspaces(ctx context.Context, client *internal.Client, customerId string, options *SearchWorkspacesOptions)(SearchWorkspacesOutput, error){
+func SearchWorkspaces(ctx context.Context, client *client.Client, customerId string, options *SearchWorkspacesOptions)(SearchWorkspacesOutput, error){
 
 	var data SearchWorkspacesOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "workspaces")
