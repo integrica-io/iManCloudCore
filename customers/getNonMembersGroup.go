@@ -3,8 +3,8 @@ package customers
 import (
 	"time"
 	"context"
-	"iManCloudCore/internal"
-
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 	"github.com/google/go-querystring/query"	
 )
 
@@ -52,7 +52,7 @@ type GetNonMembersGroupOptions struct {
     Total bool `url:"total,omitempty"`
 }
 
-func GetNonMembersGroup(ctx context.Context, client *internal.Client, groupId string, options *GetNonMembersGroupOptions)(GetNonMembersGroupOutput, error){
+func GetNonMembersGroup(ctx context.Context, client *client.Client, groupId string, options *GetNonMembersGroupOptions)(GetNonMembersGroupOutput, error){
 
 	var data GetNonMembersGroupOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "groups", groupId, "non-members")

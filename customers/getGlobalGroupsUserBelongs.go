@@ -3,8 +3,8 @@ package customers
 import (
 	"time"
 	"context"
-	"iManCloudCore/internal"
-
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/client"
 	"github.com/google/go-querystring/query"	
 )
 
@@ -36,7 +36,7 @@ type GetGlobalGroupsUserBelongsOptions struct {
     Total bool `url:"total,omitempty"`
 }
 
-func GetGlobalGroupsUserBelongs(ctx context.Context, client *internal.Client, userId string, options *GetGlobalGroupsUserBelongsOptions)(GetGlobalGroupsUserBelongsOutput, error){
+func GetGlobalGroupsUserBelongs(ctx context.Context, client *client.Client, userId string, options *GetGlobalGroupsUserBelongsOptions)(GetGlobalGroupsUserBelongsOutput, error){
 
 	var data GetGlobalGroupsUserBelongsOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "users", userId, "groups")
