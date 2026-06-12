@@ -117,7 +117,7 @@ type SearchWorkspacesOptions struct {
     Total bool `url:"total,omitempty"`
 }
 
-func SearchWorkspaces(ctx context.Context, client *client.Client, customerId string, options *SearchWorkspacesOptions)(SearchWorkspacesOutput, error){
+func SearchWorkspaces(ctx context.Context, client *client.Client, options *SearchWorkspacesOptions)(SearchWorkspacesOutput, error){
 
 	var data SearchWorkspacesOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "workspaces")
