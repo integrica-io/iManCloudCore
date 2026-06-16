@@ -9,7 +9,7 @@ import (
 	"github.com/google/go-querystring/query"	
 )
 
-func GetWorkspaceProfile(ctx context.Context, client client.Client, libraryId string, workspaceId string, options *GetWorkspaceProfileOptions)(GetWorkspaceProfileOutput, error){
+func GetWorkspaceProfile(ctx context.Context, client *client.Client, libraryId string, workspaceId string, options *GetWorkspaceProfileOptions)(GetWorkspaceProfileOutput, error){
 	var data GetWorkspaceProfileOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId)
 

@@ -7,7 +7,7 @@ import (
 	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func GetWorkspaceDefaultSecurity(ctx context.Context, client client.Client, libraryId string, workspaceId string) (GetWorkspaceDefaultSecurityOutput, error) {
+func GetWorkspaceDefaultSecurity(ctx context.Context, client *client.Client, libraryId string, workspaceId string) (GetWorkspaceDefaultSecurityOutput, error) {
 	var data GetWorkspaceDefaultSecurityOutput
 	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "security")
 

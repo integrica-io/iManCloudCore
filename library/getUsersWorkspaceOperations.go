@@ -7,7 +7,7 @@ import (
 	"github.com/integrica-io/iManCloudCore/client"
 )
 
-func GetUsersWorkspaceOperations(ctx context.Context, client client.Client, libraryId string, workspaceId string)(GetUsersWorkspaceOperationsOutput, error){
+func GetUsersWorkspaceOperations(ctx context.Context, client *client.Client, libraryId string, workspaceId string)(GetUsersWorkspaceOperationsOutput, error){
 	var data GetUsersWorkspaceOperationsOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "operations")
 
