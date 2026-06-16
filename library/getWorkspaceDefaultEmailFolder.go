@@ -8,7 +8,7 @@ import (
 	"github.com/integrica-io/iManCloudCore/client"
 )
 
-func GetWorkspaceDefaultEmailFolder(ctx context.Context, client client.Client, libraryId string, workspaceId string)(GetWorkspaceDefaultEmailFolderOutput, error){
+func GetWorkspaceDefaultEmailFolder(ctx context.Context, client *client.Client, libraryId string, workspaceId string)(GetWorkspaceDefaultEmailFolderOutput, error){
 	var data GetWorkspaceDefaultEmailFolderOutput
 	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "default-email-folder")
 
