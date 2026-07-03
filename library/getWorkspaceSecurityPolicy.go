@@ -9,7 +9,7 @@ import (
 
 func GetWorkspaceSecurityPolicy(ctx context.Context, client *client.Client, libraryId string, workspaceId string) (GetWorkspaceSecurityPolicyOutput, error) {
 	var data GetWorkspaceSecurityPolicyOutput
-	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "security")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "security-policy")
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)
