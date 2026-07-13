@@ -2,10 +2,11 @@ package customers
 
 import (
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
 
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 )
 
 type GetSecurityTemplatesOutput struct {
@@ -19,15 +20,15 @@ type GetSecurityTemplatesOutput struct {
 	TotalCount int `json:"total_count"`
 }
 
-type GetSecurityTemplatesOptions struct{
-	Limit int `url:"limit,omitempty"`
+type GetSecurityTemplatesOptions struct {
+	Limit  int `url:"limit,omitempty"`
 	Offset int `url:"Offset,omitempty"`
-	Total int `url:"total,omitempty"`
+	Total  int `url:"total,omitempty"`
 }
 
-func GetSecurityTemplates(ctx context.Context, client *client.Client, options *GetSecurityTemplatesOptions)(GetSecurityTemplatesOutput, error){
+func GetSecurityTemplates(ctx context.Context, client *client.Client, options *GetSecurityTemplatesOptions) (GetSecurityTemplatesOutput, error) {
 	var data GetSecurityTemplatesOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "security-templates")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "security-templates")
 
 	if options != nil {
 		values, err := query.Values(options)

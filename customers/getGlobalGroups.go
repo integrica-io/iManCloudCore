@@ -1,11 +1,12 @@
 package customers
 
 import (
-	"time"
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
+	"time"
+
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type GetGlobalGroupsOutput struct {
@@ -28,19 +29,18 @@ type GetGlobalGroupsOutput struct {
 }
 
 type GetGlobalGroupsOptions struct {
-    DirectoryId string `url:"directory_id,omitempty"`
-    Enabled bool `url:"enabled,omitempty"`
-    External bool `url:"external,omitempty"`
-    Limit int `url:"limit,omitempty"`
-    Offset int `url:"offset,omitempty"`
-    Query string `url:"query,omitempty"`
-    Total bool `url:"total,omitempty"`
+	DirectoryId string `url:"directory_id,omitempty"`
+	Enabled     bool   `url:"enabled,omitempty"`
+	External    bool   `url:"external,omitempty"`
+	Limit       int    `url:"limit,omitempty"`
+	Offset      int    `url:"offset,omitempty"`
+	Query       string `url:"query,omitempty"`
+	Total       bool   `url:"total,omitempty"`
 }
 
-func GetGlobalGroups(ctx context.Context, client *client.Client, options *GetGlobalGroupsOptions)(GetGlobalGroupsOutput, error){
-
+func GetGlobalGroups(ctx context.Context, client *client.Client, options *GetGlobalGroupsOptions) (GetGlobalGroupsOutput, error) {
 	var data GetGlobalGroupsOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "groups")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "groups")
 
 	if options != nil {
 		values, err := query.Values(options)

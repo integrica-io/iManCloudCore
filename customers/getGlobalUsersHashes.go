@@ -2,10 +2,11 @@ package customers
 
 import (
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
 
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 )
 
 type GetGlobalUsersHashesOutput struct {
@@ -17,15 +18,14 @@ type GetGlobalUsersHashesOutput struct {
 	Cursor string `json:"cursor"`
 }
 
-type GetGlobalUsersHashesOptions struct{
+type GetGlobalUsersHashesOptions struct {
 	Cursor string `url:"cursor,omitempty"`
-	Limit int `url:"limit,omitempty"`
+	Limit  int    `url:"limit,omitempty"`
 }
 
-func GetGlobalUsersHashes(ctx context.Context, client *client.Client, options *GetGlobalRolesOptions)(GetGlobalUsersHashesOutput, error){
-
+func GetGlobalUsersHashes(ctx context.Context, client *client.Client, options *GetGlobalRolesOptions) (GetGlobalUsersHashesOutput, error) {
 	var data GetGlobalUsersHashesOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "directory-sync", "users", "hashes")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "directory-sync", "users", "hashes")
 
 	if options != nil {
 		values, err := query.Values(options)

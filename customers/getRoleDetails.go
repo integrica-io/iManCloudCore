@@ -2,8 +2,9 @@ package customers
 
 import (
 	"context"
+
+	"github.com/integrica-io/iManCloudCore/client"
 	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"	
 )
 
 type GetRoleDetailsOutput struct {
@@ -71,9 +72,9 @@ type GetRoleDetailsOutput struct {
 	} `json:"data"`
 }
 
-func GetRoleDetails(ctx context.Context, client *client.Client, alias string, libraryId string)(GetRoleDetailsOutput, error){
+func GetRoleDetails(ctx context.Context, client *client.Client, alias string, libraryId string) (GetRoleDetailsOutput, error) {
 	var data GetRoleDetailsOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "roles", alias)
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "roles", alias)
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)

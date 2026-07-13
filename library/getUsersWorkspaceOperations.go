@@ -2,14 +2,14 @@ package library
 
 import (
 	"context"
-	
-	"github.com/integrica-io/iManCloudCore/internal"
+
 	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func GetUsersWorkspaceOperations(ctx context.Context, client *client.Client, libraryId string, workspaceId string)(GetUsersWorkspaceOperationsOutput, error){
+func GetUsersWorkspaceOperations(ctx context.Context, client *client.Client, libraryId string, workspaceId string) (GetUsersWorkspaceOperationsOutput, error) {
 	var data GetUsersWorkspaceOperationsOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "operations")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "operations")
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)

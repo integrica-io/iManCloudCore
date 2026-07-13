@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+
 	"github.com/integrica-io/iManCloudCore/client"
 )
 
@@ -14,9 +15,9 @@ type GetAccessTokenSettingsOutput struct {
 }
 
 func GetAccessTokenSettings(ctx context.Context, client *client.Client) error {
-	if client.Token == nil{
+	if client.Token == nil {
 		return fmt.Errorf("access token required")
 	}
-	
+
 	return nil
 }

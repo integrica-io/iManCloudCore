@@ -1,11 +1,12 @@
 package customers
 
 import (
-	"time"
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
+	"time"
+
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type GetNonMembersGroupOutput struct {
@@ -35,27 +36,26 @@ type GetNonMembersGroupOutput struct {
 }
 
 type GetNonMembersGroupOptions struct {
-    Alias string `url:"alias,omitempty"`
-    AllowLogon bool `url:"allow_logon,omitempty"`
-    Email string `url:"email,omitempty"`
-    FullName string `url:"full_name,omitempty"`
-    IncludeLibraries bool `url:"include_libraries,omitempty"`
-    IsExternal bool `url:"is_external,omitempty"`
-    Limit int `url:"limit,omitempty"`
-    Location string `url:"location,omitempty"`
-    Nos int `url:"nos,omitempty"`
-    Offset int `url:"offset,omitempty"`
-    PasswordNeverExpire bool `url:"password_never_expire,omitempty"`
-    PreferredLibrary string `url:"preferred_library,omitempty"`
-    Query string `url:"query,omitempty"`
-    Ssid string `url:"ssid,omitempty"`
-    Total bool `url:"total,omitempty"`
+	Alias               string `url:"alias,omitempty"`
+	AllowLogon          bool   `url:"allow_logon,omitempty"`
+	Email               string `url:"email,omitempty"`
+	FullName            string `url:"full_name,omitempty"`
+	IncludeLibraries    bool   `url:"include_libraries,omitempty"`
+	IsExternal          bool   `url:"is_external,omitempty"`
+	Limit               int    `url:"limit,omitempty"`
+	Location            string `url:"location,omitempty"`
+	Nos                 int    `url:"nos,omitempty"`
+	Offset              int    `url:"offset,omitempty"`
+	PasswordNeverExpire bool   `url:"password_never_expire,omitempty"`
+	PreferredLibrary    string `url:"preferred_library,omitempty"`
+	Query               string `url:"query,omitempty"`
+	Ssid                string `url:"ssid,omitempty"`
+	Total               bool   `url:"total,omitempty"`
 }
 
-func GetNonMembersGroup(ctx context.Context, client *client.Client, groupId string, options *GetNonMembersGroupOptions)(GetNonMembersGroupOutput, error){
-
+func GetNonMembersGroup(ctx context.Context, client *client.Client, groupId string, options *GetNonMembersGroupOptions) (GetNonMembersGroupOutput, error) {
 	var data GetNonMembersGroupOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "groups", groupId, "non-members")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "groups", groupId, "non-members")
 
 	if options != nil {
 		values, err := query.Values(options)

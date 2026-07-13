@@ -1,12 +1,13 @@
 package multiLibrary
 
 import (
-	"time"
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
+	"time"
 
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 )
 
 type GetGlobalFoldersOutput struct {
@@ -36,23 +37,22 @@ type GetGlobalFoldersOutput struct {
 }
 
 type GetGlobalFoldersOptions struct {
-    Description string `url:"description,omitempty"`
-    Email string `url:"email,omitempty"`
-    Libraries string `url:"libraries,omitempty"`
-    Limit int `url:"limit,omitempty"`
-    Name string `url:"name,omitempty"`
-    NameOrDescription string `url:"name_or_description,omitempty"`
-    Offset int `url:"offset,omitempty"`
-    Owner string `url:"owner,omitempty"`
-    ReferenceDatabase string `url:"reference_database,omitempty"`
-    TimezoneOffset int `url:"timezone_offset,omitempty"`
-    Total bool `url:"total,omitempty"`
+	Description       string `url:"description,omitempty"`
+	Email             string `url:"email,omitempty"`
+	Libraries         string `url:"libraries,omitempty"`
+	Limit             int    `url:"limit,omitempty"`
+	Name              string `url:"name,omitempty"`
+	NameOrDescription string `url:"name_or_description,omitempty"`
+	Offset            int    `url:"offset,omitempty"`
+	Owner             string `url:"owner,omitempty"`
+	ReferenceDatabase string `url:"reference_database,omitempty"`
+	TimezoneOffset    int    `url:"timezone_offset,omitempty"`
+	Total             bool   `url:"total,omitempty"`
 }
 
-func GetGlobalFolders(ctx context.Context, client *client.Client, customerId string, options *GetGlobalFoldersOptions)(GetGlobalFoldersOutput, error){
-
+func GetGlobalFolders(ctx context.Context, client *client.Client, customerId string, options *GetGlobalFoldersOptions) (GetGlobalFoldersOutput, error) {
 	var data GetGlobalFoldersOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "folders")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "folders")
 
 	if options != nil {
 		values, err := query.Values(options)

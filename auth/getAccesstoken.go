@@ -3,39 +3,39 @@ package auth
 import (
 	"context"
 	"fmt"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/integrica-io/iManCloudCore/types"
-	
 	"net/url"
 	"time"
+
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/types"
 )
 
-func GetAccessToken(ctx context.Context, client *client.Client) (error) {
-	endpoint := client.BaseUrl.JoinPath("auth","oauth2","token")
+func GetAccessToken(ctx context.Context, client *client.Client) error {
+	endpoint := client.BaseUrl.JoinPath("auth", "oauth2", "token")
 	data := url.Values{}
 
 	data.Set("grant_type", string(client.TokenCfg.Grant))
-	
-	if client.TokenCfg.Grant == ""{
-		return fmt.Errorf("empty grant type") 
+
+	if client.TokenCfg.Grant == "" {
+		return fmt.Errorf("empty grant type")
 	}
 
 	if err := client.TokenCfg.IsValid(); err != nil {
 		return fmt.Errorf("GetAccessToken, tokenCfg.isValid, %s", err)
 	}
 
-	if client.TokenCfg.Grant != types.RefreshToken{
+	if client.TokenCfg.Grant != types.RefreshToken {
 		data.Set("client_id", client.TokenCfg.ClientId)
 		data.Set("client_secret", client.TokenCfg.ClientSecret)
 	}
-		
-	switch client.TokenCfg.Grant{
-		case types.Password:
-			data.Set("password", client.TokenCfg.Password)
-			data.Set("username", client.TokenCfg.Username)
-		case types.Saml2Bearer:
-			data.Set("assertion", client.TokenCfg.Assertion)
+
+	switch client.TokenCfg.Grant {
+	case types.Password:
+		data.Set("password", client.TokenCfg.Password)
+		data.Set("username", client.TokenCfg.Username)
+	case types.Saml2Bearer:
+		data.Set("assertion", client.TokenCfg.Assertion)
 	}
 
 	req := internal.HttpRequestBuilder{}
@@ -47,9 +47,9 @@ func GetAccessToken(ctx context.Context, client *client.Client) (error) {
 	if err := client.Req(req); err != nil {
 		return err
 	}
-	
+
 	client.Token = &GetAccesstokenOutput
 	client.Token.TokenExpiry = time.Now().Add(time.Second * time.Duration(client.Token.ExpiresIn))
-	
+
 	return nil
 }
