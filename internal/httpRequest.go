@@ -16,23 +16,25 @@ const (
 )
 
 type HttpRequestCfg struct {
-	ReqUrl     url.URL
-	ReqMethod  HttpMethod
-	ReqCtx     context.Context
-	ReqHeaders map[string]string
-	ReqBody    []byte
-	ReqForm    url.Values
-	ReqToJson  any
+	ReqUrl     	url.URL
+	ReqMethod  	HttpMethod
+	ReqCtx     	context.Context
+	ReqHeaders 	map[string]string
+	ReqBody    	[]byte
+	ReqForm    	url.Values
+	ReqToJson  	any
+	ReqToFile	string
 }
 
 type HttpRequestBuilder struct {
-	ReqUrl     *url.URL
-	ReqMethod  *HttpMethod
-	ReqCtx     *context.Context
-	ReqHeaders *map[string]string
-	ReqBody    *[]byte
-	ReqForm    *url.Values
-	ReqToJson  *any
+	ReqUrl     	*url.URL
+	ReqMethod  	*HttpMethod
+	ReqCtx     	*context.Context
+	ReqHeaders 	*map[string]string
+	ReqBody    	*[]byte
+	ReqForm    	*url.Values
+	ReqToJson  	*any
+	ReqToFile	*string
 }
 
 func (b *HttpRequestBuilder) Url(url url.URL) *HttpRequestBuilder {
@@ -67,5 +69,10 @@ func (b *HttpRequestBuilder) Form(form url.Values) *HttpRequestBuilder {
 
 func (b *HttpRequestBuilder) ToJson(pointer any) *HttpRequestBuilder {
 	b.ReqToJson = &pointer
+	return b
+}
+
+func (b *HttpRequestBuilder) ToFile(pointer string) *HttpRequestBuilder {
+	b.ReqToFile = &pointer
 	return b
 }

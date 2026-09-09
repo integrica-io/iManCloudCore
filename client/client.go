@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"io"
 	"net/http"
 	"net/url"
@@ -93,8 +94,21 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 		return internal.HttpErrorHandler(resp)
 	}
 
+	if b.ReqToFile != nil {
+		reqCfg.ReqToFile = *b.ReqToFile
+		bytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+		err = os.WriteFile(reqCfg.ReqToFile, bytes, 0644)
+		if err != nil {
+		    fmt.Printf("Error writing file: %v\n", err)
+		}
+		return nil
+	}
+
 	if b.ReqToJson != nil {
-		reqCfg.ReqToJson = b.ReqToJson
+		reqCfg.ReqToJson = *b.ReqToJson
 		bytes, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return err
@@ -102,6 +116,7 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 		if err := json.Unmarshal(bytes, &reqCfg.ReqToJson); err != nil {
 			return err
 		}
+		return nil
 	}
 	return nil
 }
