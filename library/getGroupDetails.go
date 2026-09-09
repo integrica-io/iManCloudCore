@@ -3,14 +3,14 @@ package library
 import (
 	"context"
 	"time"
-	
-	"github.com/integrica-io/iManCloudCore/internal"
+
 	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func GetGroupsDetails(ctx context.Context, client *client.Client, libraryId string, groupId string)(GetGroupDetailsOutput, error){
+func GetGroupsDetails(ctx context.Context, client *client.Client, libraryId string, groupId string) (GetGroupDetailsOutput, error) {
 	var data GetGroupDetailsOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "groups", groupId)
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "groups", groupId)
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)

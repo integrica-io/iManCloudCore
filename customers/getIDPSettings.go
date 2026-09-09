@@ -2,10 +2,11 @@ package customers
 
 import (
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
 
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 )
 
 type GetIDPSettingsOutput struct {
@@ -15,14 +16,14 @@ type GetIDPSettingsOutput struct {
 	} `json:"data"`
 }
 
-type GetIDPSettingsOptions struct{
+type GetIDPSettingsOptions struct {
 	Cursor string `url:"cursor,omitempty"`
-	Limit int `url:"limit,omitempty"`
+	Limit  int    `url:"limit,omitempty"`
 }
 
-func GetIDPSettings(ctx context.Context, client *client.Client, options *GetIDPSettingsOptions)(GetIDPSettingsOutput, error){
+func GetIDPSettings(ctx context.Context, client *client.Client, options *GetIDPSettingsOptions) (GetIDPSettingsOutput, error) {
 	var data GetIDPSettingsOutput
-	endpoint := client.BaseUrl.JoinPath("platform","api","v2","customers",client.TokenCfg.CustomerId, "settings", "system", "idp")
+	endpoint := client.BaseUrl.JoinPath("platform", "api", "v2", "customers", client.TokenCfg.CustomerId, "settings", "system", "idp")
 
 	if options != nil {
 		values, err := query.Values(options)

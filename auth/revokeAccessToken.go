@@ -3,15 +3,16 @@ package auth
 import (
 	"context"
 	"fmt"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
 	"net/url"
+
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 func RevokeClientAccessToken(ctx context.Context, client *client.Client) error {
-	endpoint := client.BaseUrl.JoinPath("auth","oauth2","revoke-token")
+	endpoint := client.BaseUrl.JoinPath("auth", "oauth2", "revoke-token")
 
-	if client.Token == nil{
+	if client.Token == nil {
 		return fmt.Errorf("no access token available to revoke")
 	}
 
@@ -30,7 +31,7 @@ func RevokeClientAccessToken(ctx context.Context, client *client.Client) error {
 }
 
 func RevokeAccessToken(ctx context.Context, client *client.Client, accessToken string) error {
-	endpoint := client.BaseUrl.JoinPath("auth","oauth2","revoke-token")
+	endpoint := client.BaseUrl.JoinPath("auth", "oauth2", "revoke-token")
 
 	data := url.Values{}
 	data.Add("access_token", accessToken)

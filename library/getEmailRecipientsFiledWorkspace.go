@@ -2,15 +2,15 @@ package library
 
 import (
 	"context"
-	
-	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func GetEmailRecipientsFiledWorkspace(ctx context.Context, client *client.Client, libraryId string, workspaceId string, options *GetEmailRecipientsFiledWorkspaceOptions)(GetEmailRecipientsFiledWorkspaceOutput, error){
+func GetEmailRecipientsFiledWorkspace(ctx context.Context, client *client.Client, libraryId string, workspaceId string, options *GetEmailRecipientsFiledWorkspaceOptions) (GetEmailRecipientsFiledWorkspaceOutput, error) {
 	var data GetEmailRecipientsFiledWorkspaceOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "contacts")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "contacts")
 
 	if options != nil {
 		values, err := query.Values(options)
@@ -37,7 +37,7 @@ type GetEmailRecipientsFiledWorkspaceOutput struct {
 }
 
 type GetEmailRecipientsFiledWorkspaceOptions struct {
-    Limit int `url:"limit,omitempty"`
-    Query string `url:"query,omitempty"`
-    SenderOnly bool `url:"sender_only,omitempty"`
+	Limit      int    `url:"limit,omitempty"`
+	Query      string `url:"query,omitempty"`
+	SenderOnly bool   `url:"sender_only,omitempty"`
 }

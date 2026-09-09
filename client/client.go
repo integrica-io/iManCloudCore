@@ -5,29 +5,31 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/integrica-io/iManCloudCore/types"
-	"github.com/integrica-io/iManCloudCore/internal"
+	"os"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/integrica-io/iManCloudCore/types"
 )
 
 type Client struct {
-	BaseUrl 	 *url.URL
-	TokenCfg 	 types.AccessTokenCfg
-	Token	 	 *types.Token	
+	BaseUrl  *url.URL
+	TokenCfg types.AccessTokenCfg
+	Token    *types.Token
 }
 
-func NewClient(hostname string, clientCfg *types.AccessTokenCfg)(*Client, error){
+func NewClient(hostname string, clientCfg *types.AccessTokenCfg) (*Client, error) {
 	url, err := url.Parse(fmt.Sprintf("https://%s", hostname))
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &Client{
-		BaseUrl: url,
+		BaseUrl:  url,
 		TokenCfg: *clientCfg,
 	}, nil
 }
@@ -35,13 +37,13 @@ func NewClient(hostname string, clientCfg *types.AccessTokenCfg)(*Client, error)
 func (client *Client) Req(b internal.HttpRequestBuilder) error {
 	reqCfg := internal.HttpRequestCfg{}
 	reqClient := &http.Client{}
-	
-	//Validate required parameters
+
+	// Validate required parameters
 	if b.ReqCtx == nil {
 		return fmt.Errorf("context required")
 	}
 	reqCfg.ReqCtx = *b.ReqCtx
-	
+
 	if b.ReqUrl == nil {
 		return fmt.Errorf("Url required")
 	}
@@ -53,35 +55,35 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 	reqCfg.ReqMethod = *b.ReqMethod
 
 	req, err := http.NewRequestWithContext(reqCfg.ReqCtx, string(reqCfg.ReqMethod), reqCfg.ReqUrl.String(), http.NoBody)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 
 	switch {
-		case b.ReqForm != nil:
-			req.Body = io.NopCloser(strings.NewReader(b.ReqForm.Encode()))
-			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-		case b.ReqBody != nil:
-			req.Body = io.NopCloser(bytes.NewReader(*b.ReqBody))
+	case b.ReqForm != nil:
+		req.Body = io.NopCloser(strings.NewReader(b.ReqForm.Encode()))
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	case b.ReqBody != nil:
+		req.Body = io.NopCloser(bytes.NewReader(*b.ReqBody))
 	}
 
 	if b.ReqHeaders != nil {
 		reqCfg.ReqHeaders = *b.ReqHeaders
-		for i, v := range reqCfg.ReqHeaders{
+		for i, v := range reqCfg.ReqHeaders {
 			req.Header.Set(i, v)
 		}
 	}
 
 	if client.Token != nil {
-		if !time.Now().Before(client.Token.TokenExpiry){
+		if !time.Now().Before(client.Token.TokenExpiry) {
 			if err := client.RefreshAccessToken(reqCfg.ReqCtx); err != nil {
 				return err
-			}			
+			}
 		}
 		req.Header.Set("X-Auth-Token", client.Token.AccessToken)
 	}
 
- 	resp, err := reqClient.Do(req)
+	resp, err := reqClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -92,30 +94,43 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 		return internal.HttpErrorHandler(resp)
 	}
 
+	if b.ReqToFile != nil {
+		reqCfg.ReqToFile = *b.ReqToFile
+		bytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+		err = os.WriteFile(reqCfg.ReqToFile, bytes, 0644)
+		if err != nil {
+		    fmt.Printf("Error writing file: %v\n", err)
+		}
+		return nil
+	}
+
 	if b.ReqToJson != nil {
-		reqCfg.ReqToJson = b.ReqToJson
-		bytes, err  := io.ReadAll(resp.Body)
+		reqCfg.ReqToJson = *b.ReqToJson
+		bytes, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return err
 		}
 		if err := json.Unmarshal(bytes, &reqCfg.ReqToJson); err != nil {
 			return err
 		}
+		return nil
 	}
 	return nil
 }
 
-func (client *Client) RefreshAccessToken(ctx context.Context) (error) {
-
+func (client *Client) RefreshAccessToken(ctx context.Context) error {
 	if client.Token == nil {
 		return fmt.Errorf("refresh_token required to refresh access token")
 	}
-	
-	endpoint := client.BaseUrl.JoinPath("auth","oauth2","token")
+
+	endpoint := client.BaseUrl.JoinPath("auth", "oauth2", "token")
 	data := url.Values{}
-	data.Set("grant_type","refresh_token")
+	data.Set("grant_type", "refresh_token")
 	data.Set("refresh_token", client.Token.RefreshToken)
-	
+
 	req := internal.HttpRequestBuilder{}
 
 	var GetAccesstokenOutput types.Token
@@ -125,9 +140,9 @@ func (client *Client) RefreshAccessToken(ctx context.Context) (error) {
 	if err := client.Req(req); err != nil {
 		return err
 	}
-	
+
 	client.Token = &GetAccesstokenOutput
 	client.Token.TokenExpiry = time.Now().Add(time.Second * time.Duration(client.Token.ExpiresIn))
-	
+
 	return nil
 }

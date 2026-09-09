@@ -2,10 +2,11 @@ package customers
 
 import (
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
 
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 )
 
 type GetGlobalRolesOutput struct {
@@ -23,18 +24,17 @@ type GetGlobalRolesOutput struct {
 	TotalCount int `json:"total_count"`
 }
 
-type GetGlobalRolesOptions struct{
-	Limit int `url:"limit,omitempty"`
-	Offset int `url:"offset,omitempty"`
-	Query string `url:"query,omitempty"`
+type GetGlobalRolesOptions struct {
+	Limit          int            `url:"limit,omitempty"`
+	Offset         int            `url:"offset,omitempty"`
+	Query          string         `url:"query,omitempty"`
 	QueryMatchType QueryMatchType `url:"query_match_type,omitempty"`
-	Total	bool `url:"total"`
+	Total          bool           `url:"total"`
 }
 
-func GetGlobalRoles(ctx context.Context, client *client.Client, options *GetGlobalRolesOptions)(GetGlobalRolesOutput, error){
-
+func GetGlobalRoles(ctx context.Context, client *client.Client, options *GetGlobalRolesOptions) (GetGlobalRolesOutput, error) {
 	var data GetGlobalRolesOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "roles")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "roles")
 
 	if options != nil {
 		values, err := query.Values(options)
@@ -43,7 +43,6 @@ func GetGlobalRoles(ctx context.Context, client *client.Client, options *GetGlob
 		}
 		endpoint.RawQuery = values.Encode()
 	}
-
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)

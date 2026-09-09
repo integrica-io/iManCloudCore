@@ -8,54 +8,56 @@ import (
 type HttpMethod string
 
 const (
-	Get		HttpMethod = "GET"
-	Post 	HttpMethod = "POST"
-	Put		HttpMethod = "PUT"
-	Patch	HttpMethod = "PATCH"
-	Delete	HttpMethod = "DELETE"
+	Get    HttpMethod = "GET"
+	Post   HttpMethod = "POST"
+	Put    HttpMethod = "PUT"
+	Patch  HttpMethod = "PATCH"
+	Delete HttpMethod = "DELETE"
 )
 
 type HttpRequestCfg struct {
-	ReqUrl 		url.URL
-	ReqMethod	HttpMethod
-	ReqCtx		context.Context
+	ReqUrl     	url.URL
+	ReqMethod  	HttpMethod
+	ReqCtx     	context.Context
 	ReqHeaders 	map[string]string
-	ReqBody 	[]byte
-	ReqForm		url.Values
+	ReqBody    	[]byte
+	ReqForm    	url.Values
 	ReqToJson  	any
+	ReqToFile	string
 }
 
 type HttpRequestBuilder struct {
-	ReqUrl	 	*url.URL
-	ReqMethod 	*HttpMethod
-	ReqCtx 		*context.Context
+	ReqUrl     	*url.URL
+	ReqMethod  	*HttpMethod
+	ReqCtx     	*context.Context
 	ReqHeaders 	*map[string]string
-	ReqBody		*[]byte
-	ReqForm		*url.Values
-	ReqToJson	*any
+	ReqBody    	*[]byte
+	ReqForm    	*url.Values
+	ReqToJson  	*any
+	ReqToFile	*string
 }
 
-func (b *HttpRequestBuilder) Url(url url.URL) *HttpRequestBuilder{
+func (b *HttpRequestBuilder) Url(url url.URL) *HttpRequestBuilder {
 	b.ReqUrl = &url
 	return b
 }
 
-func (b *HttpRequestBuilder) Method(method HttpMethod) *HttpRequestBuilder{
+func (b *HttpRequestBuilder) Method(method HttpMethod) *HttpRequestBuilder {
 	b.ReqMethod = &method
 	return b
 }
 
-func (b *HttpRequestBuilder) Context(ctx context.Context) *HttpRequestBuilder{
+func (b *HttpRequestBuilder) Context(ctx context.Context) *HttpRequestBuilder {
 	b.ReqCtx = &ctx
 	return b
 }
 
-func(b *HttpRequestBuilder) Headers(headers map[string]string) *HttpRequestBuilder{
+func (b *HttpRequestBuilder) Headers(headers map[string]string) *HttpRequestBuilder {
 	b.ReqHeaders = &headers
 	return b
 }
 
-func (b *HttpRequestBuilder) Body(body []byte) *HttpRequestBuilder{
+func (b *HttpRequestBuilder) Body(body []byte) *HttpRequestBuilder {
 	b.ReqBody = &body
 	return b
 }
@@ -67,5 +69,10 @@ func (b *HttpRequestBuilder) Form(form url.Values) *HttpRequestBuilder {
 
 func (b *HttpRequestBuilder) ToJson(pointer any) *HttpRequestBuilder {
 	b.ReqToJson = &pointer
+	return b
+}
+
+func (b *HttpRequestBuilder) ToFile(pointer string) *HttpRequestBuilder {
+	b.ReqToFile = &pointer
 	return b
 }

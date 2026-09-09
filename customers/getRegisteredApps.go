@@ -1,29 +1,30 @@
 package customers
 
 import (
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
 	"context"
 	"time"
+
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
 
 	"github.com/google/go-querystring/query"
 )
 
 const (
-	Available	Status = "available"
-	Disabled 	Status = "disabled"
-	Enabled		Status = "enabled"
+	Available Status = "available"
+	Disabled  Status = "disabled"
+	Enabled   Status = "enabled"
 )
 
 type Status string
 
 type GetRegisteredAppsOptions struct {
-    HostAppId string `url:"host_app_id,omitempty"`
-    Limit int `url:"limit,omitempty"`
-    Name string `url:"name,omitempty"`
-    Offset int `url:"offset,omitempty"`
-    Status Status `url:"status,omitempty"`
-    Total bool `url:"total,omitempty"`
+	HostAppId string `url:"host_app_id,omitempty"`
+	Limit     int    `url:"limit,omitempty"`
+	Name      string `url:"name,omitempty"`
+	Offset    int    `url:"offset,omitempty"`
+	Status    Status `url:"status,omitempty"`
+	Total     bool   `url:"total,omitempty"`
 }
 
 type GetRegisteredAppsOutput struct {
@@ -60,9 +61,9 @@ type GetRegisteredAppsOutput struct {
 	TotalCount int `json:"total_count"`
 }
 
-func GetRegisteredApps(ctx context.Context, client *client.Client, options *GetRegisteredAppsOptions)(GetRegisteredAppsOutput, error){
+func GetRegisteredApps(ctx context.Context, client *client.Client, options *GetRegisteredAppsOptions) (GetRegisteredAppsOutput, error) {
 	var data GetRegisteredAppsOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "apps")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "apps")
 
 	if options != nil {
 		values, err := query.Values(options)

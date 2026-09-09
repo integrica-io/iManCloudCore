@@ -7,9 +7,9 @@ import (
 	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func GetFolderSecurity(ctx context.Context, client *client.Client, libraryId string, folderId string) (GetFolderSecurityOutput, error) {
-	var data GetFolderSecurityOutput
-	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "folders", folderId, "security")
+func GetMyMatterSecurity(ctx context.Context, client *client.Client, libraryId string, userId string) (GetMyMattersSecurityOutput, error) {
+	var data GetMyMattersSecurityOutput
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "users", userId, "my-matters", "security")
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)
@@ -20,7 +20,7 @@ func GetFolderSecurity(ctx context.Context, client *client.Client, libraryId str
 	return data, nil
 }
 
-type GetFolderSecurityOutput struct {
+type GetMyMattersSecurityOutput struct {
 	Data []struct {
 		Access              int    `json:"access"`
 		AccessLevel         string `json:"access_level"`

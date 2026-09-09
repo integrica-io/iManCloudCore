@@ -2,8 +2,9 @@ package auth
 
 import (
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
+
 	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type GetActiveExternalAuthTypeOutput struct {
@@ -12,8 +13,8 @@ type GetActiveExternalAuthTypeOutput struct {
 	} `json:"data"`
 }
 
-func GetActiveExternalAuthType(ctx context.Context, client *client.Client)(GetActiveExternalAuthTypeOutput, error){
-	endpoint := client.BaseUrl.JoinPath("platform", "api", "v2","customers",client.TokenCfg.CustomerId, "settings", "system", "auth", "external-auth-type")
+func GetActiveExternalAuthType(ctx context.Context, client *client.Client) (GetActiveExternalAuthTypeOutput, error) {
+	endpoint := client.BaseUrl.JoinPath("platform", "api", "v2", "customers", client.TokenCfg.CustomerId, "settings", "system", "auth", "external-auth-type")
 	var data GetActiveExternalAuthTypeOutput
 
 	req := internal.HttpRequestBuilder{}

@@ -2,9 +2,10 @@ package customers
 
 import (
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
+
 	"github.com/google/go-querystring/query"
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type GetLibrariesUserAssignedOutput struct {
@@ -16,15 +17,15 @@ type GetLibrariesUserAssignedOutput struct {
 	TotalCount int `json:"total_count"`
 }
 
-type GetLibrariesUserAssignedOptions struct{
-	Limit 	int 	`url:"limit"`
-	Offset	int 	`url:"offset"`
-	Total 	bool	`url:"total"`
+type GetLibrariesUserAssignedOptions struct {
+	Limit  int  `url:"limit"`
+	Offset int  `url:"offset"`
+	Total  bool `url:"total"`
 }
 
-func GetLibrariesUserAssigned(ctx context.Context, client *client.Client, userId string, options *GetInfoGlobalUserOptions)(GetLibrariesUserAssignedOutput, error){
+func GetLibrariesUserAssigned(ctx context.Context, client *client.Client, userId string, options *GetInfoGlobalUserOptions) (GetLibrariesUserAssignedOutput, error) {
 	var data GetLibrariesUserAssignedOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "users", userId, "libraries")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "users", userId, "libraries")
 
 	if options != nil {
 		values, err := query.Values(options)

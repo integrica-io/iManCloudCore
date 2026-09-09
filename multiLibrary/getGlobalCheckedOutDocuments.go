@@ -2,9 +2,10 @@ package multiLibrary
 
 import (
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type GetGlobalCheckedOutDocumentsOutput struct {
@@ -53,18 +54,17 @@ type GetGlobalCheckedOutDocumentsOutput struct {
 }
 
 type GetGlobalCheckedOutDocumentsOptions struct {
-    Libraries string `url:"libraries,omitempty"`
-    Limit int `url:"limit,omitempty"`
-    Offset int `url:"offset,omitempty"`
-    Total bool `url:"total,omitempty"`
-    Type string `url:"type,omitempty"`
-    User string `url:"user,omitempty"`
+	Libraries string `url:"libraries,omitempty"`
+	Limit     int    `url:"limit,omitempty"`
+	Offset    int    `url:"offset,omitempty"`
+	Total     bool   `url:"total,omitempty"`
+	Type      string `url:"type,omitempty"`
+	User      string `url:"user,omitempty"`
 }
 
-func GetGlobalCheckedOutDocuments(ctx context.Context, client *client.Client, customerId string, options *GetGlobalCheckedOutDocumentsOptions)(GetGlobalCheckedOutDocumentsOutput, error){
-
+func GetGlobalCheckedOutDocuments(ctx context.Context, client *client.Client, customerId string, options *GetGlobalCheckedOutDocumentsOptions) (GetGlobalCheckedOutDocumentsOutput, error) {
 	var data GetGlobalCheckedOutDocumentsOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "documents", "checked-out")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "documents", "checked-out")
 
 	if options != nil {
 		values, err := query.Values(options)

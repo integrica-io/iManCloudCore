@@ -1,12 +1,12 @@
 package customers
 
 import (
-	"time"
 	"context"
+	"time"
 
-	"github.com/integrica-io/iManCloudCore/internal"
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type SearchGlobalUsersOutput struct {
@@ -36,29 +36,28 @@ type SearchGlobalUsersOutput struct {
 }
 
 type SearchGlobalUsersOptions struct {
-    Alias string `url:"alias,omitempty"`
-    AllowLogon bool `url:"allow_logon,omitempty"`
-    DirectoryId string `url:"directory_id,omitempty"`
-    Email string `url:"email,omitempty"`
-    FullName string `url:"full_name,omitempty"`
-    IncludeLibraries bool `url:"include_libraries,omitempty"`
-    IpRangeEnabled bool `url:"ip_range_enabled,omitempty"`
-    IsExternal bool `url:"is_external,omitempty"`
-    Limit int `url:"limit,omitempty"`
-    Location string `url:"location,omitempty"`
-    Nos int `url:"nos,omitempty"`
-    Offset int `url:"offset,omitempty"`
-    PasswordNeverExpire bool `url:"password_never_expire,omitempty"`
-    PreferredLibrary string `url:"preferred_library,omitempty"`
-    Query string `url:"query,omitempty"`
-    Ssid string `url:"ssid,omitempty"`
-    Total bool `url:"total,omitempty"`
+	Alias               string `url:"alias,omitempty"`
+	AllowLogon          bool   `url:"allow_logon,omitempty"`
+	DirectoryId         string `url:"directory_id,omitempty"`
+	Email               string `url:"email,omitempty"`
+	FullName            string `url:"full_name,omitempty"`
+	IncludeLibraries    bool   `url:"include_libraries,omitempty"`
+	IpRangeEnabled      bool   `url:"ip_range_enabled,omitempty"`
+	IsExternal          bool   `url:"is_external,omitempty"`
+	Limit               int    `url:"limit,omitempty"`
+	Location            string `url:"location,omitempty"`
+	Nos                 int    `url:"nos,omitempty"`
+	Offset              int    `url:"offset,omitempty"`
+	PasswordNeverExpire bool   `url:"password_never_expire,omitempty"`
+	PreferredLibrary    string `url:"preferred_library,omitempty"`
+	Query               string `url:"query,omitempty"`
+	Ssid                string `url:"ssid,omitempty"`
+	Total               bool   `url:"total,omitempty"`
 }
 
-func SearchGlobalUsers(ctx context.Context, client *client.Client, options *SearchGlobalUsersOptions)(SearchGlobalUsersOutput, error){
-
+func SearchGlobalUsers(ctx context.Context, client *client.Client, options *SearchGlobalUsersOptions) (SearchGlobalUsersOutput, error) {
 	var data SearchGlobalUsersOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "users")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "users")
 
 	if options != nil {
 		values, err := query.Values(options)

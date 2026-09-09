@@ -3,10 +3,11 @@ package customers
 import (
 	"context"
 	"time"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
 
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 )
 
 type GetUsersGlobalRoleOutput struct {
@@ -32,21 +33,21 @@ type GetUsersGlobalRoleOutput struct {
 	Overflow   bool `json:"overflow"`
 }
 
-type GetUsersGlobalRoleOptions struct{
-	AllowLogon bool `url:"allow_logon,omitempty"`
-	FullName string `url:"full_name,omitempty"`
-	Limit int `url:"limit,omitempty"`
-	Location string `url:"location,omitempty"`
-	Offset int `url:"offset,omitempty"`
-	PreferredLibrary string `url:"preferred_library,omitempty"`
-	Query string `url:"query,omitempty"`
-	QueryMatchType QueryMatchType `url:"query_match_type,omitempty"`
-	Total	bool `url:"total"`
+type GetUsersGlobalRoleOptions struct {
+	AllowLogon       bool           `url:"allow_logon,omitempty"`
+	FullName         string         `url:"full_name,omitempty"`
+	Limit            int            `url:"limit,omitempty"`
+	Location         string         `url:"location,omitempty"`
+	Offset           int            `url:"offset,omitempty"`
+	PreferredLibrary string         `url:"preferred_library,omitempty"`
+	Query            string         `url:"query,omitempty"`
+	QueryMatchType   QueryMatchType `url:"query_match_type,omitempty"`
+	Total            bool           `url:"total"`
 }
 
-func GetUsersGlobalRole(ctx context.Context, client *client.Client, roleId string, options *GetUsersGlobalRoleOptions)(GetUsersGlobalRoleOutput, error){
+func GetUsersGlobalRole(ctx context.Context, client *client.Client, roleId string, options *GetUsersGlobalRoleOptions) (GetUsersGlobalRoleOutput, error) {
 	var data GetUsersGlobalRoleOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "roles", roleId, "members")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "roles", roleId, "members")
 
 	if options != nil {
 		values, err := query.Values(options)

@@ -2,9 +2,10 @@ package customers
 
 import (
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type GetUsersGlobalAppsOutput struct {
@@ -14,16 +15,15 @@ type GetUsersGlobalAppsOutput struct {
 }
 
 type GetUsersGlobalAppsOptions struct {
-    ClientId string `url:"client_id,omitempty"`
-    Limit int `url:"limit,omitempty"`
-    Offset int `url:"offset,omitempty"`
-    Total bool `url:"total,omitempty"`
+	ClientId string `url:"client_id,omitempty"`
+	Limit    int    `url:"limit,omitempty"`
+	Offset   int    `url:"offset,omitempty"`
+	Total    bool   `url:"total,omitempty"`
 }
 
-func GetUsersGlobalApps(ctx context.Context, client *client.Client, userId string, options *GetUsersGlobalAppsOptions)(GetUsersGlobalAppsOutput, error){
-
+func GetUsersGlobalApps(ctx context.Context, client *client.Client, userId string, options *GetUsersGlobalAppsOptions) (GetUsersGlobalAppsOutput, error) {
 	var data GetUsersGlobalAppsOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "users", userId, "apps")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "users", userId, "apps")
 
 	if options != nil {
 		values, err := query.Values(options)

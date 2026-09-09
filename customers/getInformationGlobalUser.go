@@ -1,11 +1,12 @@
 package customers
 
 import (
-	"time"
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
+	"time"
+
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type GetInformationGlobalUserOutput struct {
@@ -35,13 +36,12 @@ type GetInformationGlobalUserOutput struct {
 }
 
 type GetInformationGlobalUserOptions struct {
-    IncludeLibraries bool `url:"include_libraries,omitempty"`
+	IncludeLibraries bool `url:"include_libraries,omitempty"`
 }
 
-func GetInformationGlobalUser(ctx context.Context, client *client.Client, userId string, options *GetInformationGlobalUserOptions)(GetInformationGlobalUserOutput, error){
-
+func GetInformationGlobalUser(ctx context.Context, client *client.Client, userId string, options *GetInformationGlobalUserOptions) (GetInformationGlobalUserOutput, error) {
 	var data GetInformationGlobalUserOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "users", userId)
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "users", userId)
 
 	if options != nil {
 		values, err := query.Values(options)

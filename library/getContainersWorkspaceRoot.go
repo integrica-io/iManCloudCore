@@ -3,15 +3,15 @@ package library
 import (
 	"context"
 	"time"
-	
-	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func GetContainersWorkspaceRoot(ctx context.Context, client *client.Client, libraryId string, workspaceId string, options *GetContainersWorkspaceRootOptions)(GetContainersWorkspaceRootOutput, error){
+func GetContainersWorkspaceRoot(ctx context.Context, client *client.Client, libraryId string, workspaceId string, options *GetContainersWorkspaceRootOptions) (GetContainersWorkspaceRootOutput, error) {
 	var data GetContainersWorkspaceRootOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "children")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId, "children")
 
 	if options != nil {
 		values, err := query.Values(options)
@@ -55,8 +55,8 @@ type GetContainersWorkspaceRootOutput struct {
 }
 
 type GetContainersWorkspaceRootOptions struct {
-    ChildrenType string `url:"children_type,omitempty"`
-    Limit int `url:"limit,omitempty"`
-    Offset int `url:"offset,omitempty"`
-    Total bool `url:"total,omitempty"`
+	ChildrenType string `url:"children_type,omitempty"`
+	Limit        int    `url:"limit,omitempty"`
+	Offset       int    `url:"offset,omitempty"`
+	Total        bool   `url:"total,omitempty"`
 }

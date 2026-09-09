@@ -3,15 +3,15 @@ package library
 import (
 	"context"
 	"time"
-	
-	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func GetFolderProfile(ctx context.Context, client *client.Client, libraryId string, folderId string, options *GetFolderProfileOptions)(GetFolderProfileOutput, error){
+func GetFolderProfile(ctx context.Context, client *client.Client, libraryId string, folderId string, options *GetFolderProfileOptions) (GetFolderProfileOutput, error) {
 	var data GetFolderProfileOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "folders", folderId)
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "folders", folderId)
 
 	if options != nil {
 		values, err := query.Values(options)
@@ -79,44 +79,41 @@ type GetFolderProfileOutput struct {
 	} `json:"data"`
 }
 
-type GetFolderProfileOptions struct { 
-    IncludeOperations bool `url:"include_operations,omitempty"`
-/*
-Specifies to return a list of operations allowed on a folder by the current user.<br><br>
-If `true`, returns a list of operations allowed on a folder by the user.<br>
-If `false`, does not return list of operations allowed on a folder by the user.<br>
-If omitted, the value is `false`.
+type GetFolderProfileOptions struct {
+	IncludeOperations bool `url:"include_operations,omitempty"`
+	/*
+	   Specifies to return a list of operations allowed on a folder by the current user.<br><br>
+	   If `true`, returns a list of operations allowed on a folder by the user.<br>
+	   If `false`, does not return list of operations allowed on a folder by the user.<br>
+	   If omitted, the value is `false`.
 
-*/
+	*/
 
-    ProfileCheck bool `url:"profile_check,omitempty"`
-/*
-Specifies warnings for missing required fields and disabled fields based on the folder's class (if it has one).<br><br>
-If `true`, returns warnings for missing required fields and disabled fields for the class set on folder.<br>
-If `false`, does not return warnings for missing required fields and disabled fields for the class set on folder.<br>
-For example, if `custom1` is the mandatory field for a class that is not defined, and `profile_check=true`, a warning is returned.
+	ProfileCheck bool `url:"profile_check,omitempty"`
+	/*
+	   Specifies warnings for missing required fields and disabled fields based on the folder's class (if it has one).<br><br>
+	   If `true`, returns warnings for missing required fields and disabled fields for the class set on folder.<br>
+	   If `false`, does not return warnings for missing required fields and disabled fields for the class set on folder.<br>
+	   For example, if `custom1` is the mandatory field for a class that is not defined, and `profile_check=true`, a warning is returned.
 
-```
-"warnings": [
-    {
-        "error": "required",
-        "field": "custom1"
-    }
-],
-"error": {
-    "code": "NRC_INVALID_PROFILE",
-    "code_message": "Document profile is invalid",
-    "messages": [
-        {
-            "code": "required",
-            "field": "custom1"
-        }
-    ]
+	   ```
+	   "warnings": [
+	       {
+	           "error": "required",
+	           "field": "custom1"
+	       }
+	   ],
+	   "error": {
+	       "code": "NRC_INVALID_PROFILE",
+	       "code_message": "Document profile is invalid",
+	       "messages": [
+	           {
+	               "code": "required",
+	               "field": "custom1"
+	           }
+	       ]
+	   }
+	   ```
+
+	*/
 }
-```
-
-*/
-
-}
-
-

@@ -1,17 +1,17 @@
 package library
 
 import (
-	"time"
 	"context"
-	
-	"github.com/integrica-io/iManCloudCore/internal"
+	"time"
+
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func GetWorkspaceProfile(ctx context.Context, client *client.Client, libraryId string, workspaceId string, options *GetWorkspaceProfileOptions)(GetWorkspaceProfileOutput, error){
+func GetWorkspaceProfile(ctx context.Context, client *client.Client, libraryId string, workspaceId string, options *GetWorkspaceProfileOptions) (GetWorkspaceProfileOutput, error) {
 	var data GetWorkspaceProfileOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId)
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "workspaces", workspaceId)
 
 	if options != nil {
 		values, err := query.Values(options)
@@ -23,7 +23,7 @@ func GetWorkspaceProfile(ctx context.Context, client *client.Client, libraryId s
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)
-	
+
 	if err := client.Req(req); err != nil {
 		return data, err
 	}
@@ -106,6 +106,6 @@ type GetWorkspaceProfileOutput struct {
 }
 
 type GetWorkspaceProfileOptions struct {
-    IncludeOperations bool `url:"include_operations,omitempty"`
-    ProfileCheck bool `url:"profile_check,omitempty"`
+	IncludeOperations bool `url:"include_operations,omitempty"`
+	ProfileCheck      bool `url:"profile_check,omitempty"`
 }

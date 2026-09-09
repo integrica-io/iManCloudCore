@@ -2,10 +2,11 @@ package customers
 
 import (
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
-	"github.com/integrica-io/iManCloudCore/client"
 
-	"github.com/google/go-querystring/query"	
+	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
+
+	"github.com/google/go-querystring/query"
 )
 
 type GetGlobalGroupMembersOutput struct {
@@ -15,15 +16,14 @@ type GetGlobalGroupMembersOutput struct {
 	Cursor string `json:"cursor"`
 }
 
-type GetGlobalGroupMembersOptions struct{
+type GetGlobalGroupMembersOptions struct {
 	Cursor string `url:"cursor,omitempty"`
-	Limit int `url:"limit,omitempty"`
+	Limit  int    `url:"limit,omitempty"`
 }
 
-func GetGlobalGroupMembers(ctx context.Context, client *client.Client, customerId string, options *GetGlobalGroupMembersOptions)(GetGlobalGroupMembersOutput, error){
-
+func GetGlobalGroupMembers(ctx context.Context, client *client.Client, customerId string, options *GetGlobalGroupMembersOptions) (GetGlobalGroupMembersOutput, error) {
 	var data GetGlobalGroupMembersOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "directory-sync", "groups", customerId, "members")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "directory-sync", "groups", customerId, "members")
 
 	if options != nil {
 		values, err := query.Values(options)

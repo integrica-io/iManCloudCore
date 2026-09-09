@@ -1,10 +1,11 @@
 package customers
 
 import (
-	"time"
 	"context"
-	"github.com/integrica-io/iManCloudCore/internal"
+	"time"
+
 	"github.com/integrica-io/iManCloudCore/client"
+	"github.com/integrica-io/iManCloudCore/internal"
 )
 
 type GetDetailsGlobalGroupOutput struct {
@@ -25,10 +26,9 @@ type GetDetailsGlobalGroupOutput struct {
 	} `json:"data"`
 }
 
-func GetDetailsGlobalGroup(ctx context.Context, client *client.Client, groupId string)(GetDetailsGlobalGroupOutput, error){
-
+func GetDetailsGlobalGroup(ctx context.Context, client *client.Client, groupId string) (GetDetailsGlobalGroupOutput, error) {
 	var data GetDetailsGlobalGroupOutput
-	endpoint := client.BaseUrl.JoinPath("work","api","v2","customers",client.TokenCfg.CustomerId, "groups", groupId)
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "groups", groupId)
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)
