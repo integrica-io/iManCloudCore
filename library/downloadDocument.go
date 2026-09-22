@@ -2,14 +2,15 @@ package library
 
 import (
 	"context"
-	
+	"fmt"
+
 	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
 	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func DownloadDocument(ctx context.Context, client *client.Client, libraryId string, docId string, options GetFolderProfileOptions, exportFilename string) (error) {
-	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "documents", docId, "download")
+func DownloadDocument(ctx context.Context, client *client.Client, libraryId string, docId string, options DownloadDocumentOptions, exportFilename string) (error) {
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "documents", fmt.Sprintf("%s!%s", libraryId, docId), "download")
 
 	values, err := query.Values(options)
 	if err != nil {
