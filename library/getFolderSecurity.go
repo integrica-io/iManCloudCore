@@ -2,6 +2,7 @@ package library
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/integrica-io/iManCloudCore/client"
 	"github.com/integrica-io/iManCloudCore/internal"
@@ -9,7 +10,7 @@ import (
 
 func GetFolderSecurity(ctx context.Context, client *client.Client, libraryId string, folderId string) (GetFolderSecurityOutput, error) {
 	var data GetFolderSecurityOutput
-	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "folders", folderId, "security")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "folders", fmt.Sprintf("%s!%s", libraryId, folderId), "security")
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)
