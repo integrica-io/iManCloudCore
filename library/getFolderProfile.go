@@ -2,6 +2,7 @@ package library
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -11,7 +12,7 @@ import (
 
 func GetFolderProfile(ctx context.Context, client *client.Client, libraryId string, folderId string, options *GetFolderProfileOptions) (GetFolderProfileOutput, error) {
 	var data GetFolderProfileOutput
-	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "folders", folderId)
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "folders", fmt.Sprintf("%s!%s", libraryId, folderId))
 
 	if options != nil {
 		values, err := query.Values(options)

@@ -2,6 +2,7 @@ package library
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/integrica-io/iManCloudCore/client"
@@ -10,7 +11,7 @@ import (
 
 func GetFolderPath(ctx context.Context, client *client.Client, libraryId string, folderId string) (GetFolderPathOutput, error) {
 	var data GetFolderPathOutput
-	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "folders", folderId, "path")
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "folders", fmt.Sprintf("%s!%s", libraryId, folderId), "path")
 
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)
