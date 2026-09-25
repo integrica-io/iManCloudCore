@@ -23,23 +23,25 @@ func GetDocumentHistory(ctx context.Context, client *client.Client, libraryId st
 }
 
 type GetDocumentHistoryOutput struct {
-	Data []struct {
-		Activity        string    `json:"activity"`
-		ActivityCode    int       `json:"activity_code"`
-		ActivityDate    time.Time `json:"activity_date"`
-		ApplicationID   string    `json:"application_id"`
-		ApplicationName string    `json:"application_name"`
-		DocumentNumber  int       `json:"document_number"`
-		HasJournal      bool      `json:"has_journal"`
-		Location        string    `json:"location"`
-		Num1            string    `json:"num1"`
-		ID              string    `json:"id"`
-		User            string    `json:"user"`
-		UserFullname    string    `json:"user_fullname"`
-		Version         int       `json:"version"`
-		Comments        string    `json:"comments,omitempty"`
-	} `json:"data"`
+	Data []GetDocumentHistoryOutputData `json:"data"`
 	TotalCount int `json:"total_count"`
+}
+
+type GetDocumentHistoryOutputData struct{
+	Activity        string    `json:"activity"`
+	ActivityCode    int       `json:"activity_code"`
+	ActivityDate    time.Time `json:"activity_date"`
+	ApplicationID   string    `json:"application_id"`
+	ApplicationName string    `json:"application_name"`
+	DocumentNumber  int       `json:"document_number"`
+	HasJournal      bool      `json:"has_journal"`
+	Location        string    `json:"location"`
+	Num1            string    `json:"num1"`
+	ID              string    `json:"id"`
+	User            string    `json:"user"`
+	UserFullname    string    `json:"user_fullname"`
+	Version         int       `json:"version"`
+	Comments        string    `json:"comments,omitempty"`
 }
 
 type GetDocumentHistoryActivity string
