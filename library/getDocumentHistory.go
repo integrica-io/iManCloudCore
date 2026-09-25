@@ -9,8 +9,8 @@ import (
 	"github.com/integrica-io/iManCloudCore/internal"
 )
 
-func GetDocumentHistory(ctx context.Context, client *client.Client, libraryId string, documentId string, options *GetDocumentHistoryOptions) (GetDocumentPathOutput, error) {
-	var data GetDocumentPathOutput
+func GetDocumentHistory(ctx context.Context, client *client.Client, libraryId string, documentId string, options *GetDocumentHistoryOptions) (GetDocumentHistoryOutput, error) {
+	var data GetDocumentHistoryOutput
 	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "documents", fmt.Sprintf("%s!%s", libraryId, documentId), "history")
 
 	req := internal.HttpRequestBuilder{}
