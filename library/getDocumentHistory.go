@@ -4,7 +4,8 @@ import (
 	"context"
 	"time"
 	"fmt"
-
+	
+	"github.com/google/go-querystring/query"
 	"github.com/integrica-io/iManCloudCore/client"
 	"github.com/integrica-io/iManCloudCore/internal"
 )
@@ -13,6 +14,14 @@ func GetDocumentHistory(ctx context.Context, client *client.Client, libraryId st
 	var data GetDocumentHistoryOutput
 	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "documents", fmt.Sprintf("%s!%s", libraryId, documentId), "history")
 
+	if options != nil {
+		values, err := query.Values(options)
+		if err != nil {
+			return data, err
+		}
+		endpoint.RawQuery = values.Encode()
+	}
+		
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)
 
