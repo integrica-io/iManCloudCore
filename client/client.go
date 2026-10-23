@@ -87,13 +87,13 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 
 	var retryCount int
 	var resp *http.Response
+	defer resp.Body.Close()
 	for {
 		resp, err := reqClient.Do(req)
 		if err != nil {
 			return err
 		}
-		defer resp.Body.Close()
-	
+			
 		respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
 		if respOk {
 			break
