@@ -85,27 +85,25 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 		req.Header.Set("X-Auth-Token", client.Token.AccessToken)
 	}
 
-	var retryCount int
 	var resp *http.Response
 	defer resp.Body.Close()
-	for {
+ 	for attempt := 1; attempt <= 5; attempt++ {
 		resp, err := reqClient.Do(req)
-		if err != nil {
-			return err
-		}
-			
-		respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
-		if respOk {
+		if err == nil {
 			break
 		}
 		slog.Error("err","err", internal.HttpErrorHandler(resp))
-		retryCount++
-		if retryCount > 5 {
+		jitter()
+		if attempt == 5{
 			return internal.HttpErrorHandler(resp)
 		}
-		jitter()
+ 	}
+  
+	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
+	if !respOk {
+		return internal.HttpErrorHandler(resp)
 	}
-	
+
 	if b.ReqToFile != nil {
 		reqCfg.ReqToFile = *b.ReqToFile
 		bytes, err := io.ReadAll(resp.Body)
