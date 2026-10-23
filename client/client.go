@@ -103,6 +103,7 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 		if retryCount > 5 {
 			return internal.HttpErrorHandler(resp)
 		}
+		jitter()
 	}
 	
 	if b.ReqToFile != nil {
