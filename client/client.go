@@ -6,13 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log/slog"
+	"math/rand/v2"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 	"time"
-	"math/rand/v2"
 
 	"github.com/integrica-io/iManCloudCore/internal"
 	"github.com/integrica-io/iManCloudCore/types"
@@ -22,6 +22,7 @@ type Client struct {
 	BaseUrl  *url.URL
 	TokenCfg types.AccessTokenCfg
 	Token    *types.Token
+	mu		 sync.Mutex
 }
 
 func NewClient(hostname string, clientCfg *types.AccessTokenCfg) (*Client, error) {
@@ -37,51 +38,56 @@ func NewClient(hostname string, clientCfg *types.AccessTokenCfg) (*Client, error
 }
 
 func (client *Client) Req(b internal.HttpRequestBuilder) error {
-	reqCfg := internal.HttpRequestCfg{}
 	reqClient := &http.Client{}
 
-	// Validate required parameters
-	if b.ReqCtx == nil {
+	if b.ReqCtx == nil || *b.ReqCtx == nil {
 		return fmt.Errorf("context required")
 	}
-	reqCfg.ReqCtx = *b.ReqCtx
+	ctx := *b.ReqCtx
 
 	if b.ReqUrl == nil {
 		return fmt.Errorf("Url required")
 	}
-	reqCfg.ReqUrl = *b.ReqUrl
 
 	if b.ReqMethod == nil {
 		return fmt.Errorf("Method required")
 	}
-	reqCfg.ReqMethod = *b.ReqMethod
-
-	req, err := http.NewRequestWithContext(reqCfg.ReqCtx, string(reqCfg.ReqMethod), reqCfg.ReqUrl.String(), http.NoBody)
-	if err != nil {
-		return err
-	}
+	
+	var bodyReader io.Reader = http.NoBody
+	var contentType string
 
 	switch {
 	case b.ReqForm != nil:
-		req.Body = io.NopCloser(strings.NewReader(b.ReqForm.Encode()))
-		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+		bodyReader = strings.NewReader(b.ReqForm.Encode())
+		contentType = "application/x-www-form-urlencoded"
 	case b.ReqBody != nil:
-		req.Body = io.NopCloser(bytes.NewReader(*b.ReqBody))
+		bodyReader = bytes.NewReader(*b.ReqBody)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, string(*b.ReqMethod), b.ReqUrl.String(), bodyReader)
+		if err != nil {
+			return fmt.Errorf("creating request: %w", err)
+	}
+
+	if contentType != "" {
+			req.Header.Set("Content-Type", contentType)
 	}
 
 	if b.ReqHeaders != nil {
-		reqCfg.ReqHeaders = *b.ReqHeaders
-		for i, v := range reqCfg.ReqHeaders {
+		for i, v := range *b.ReqHeaders {
 			req.Header.Set(i, v)
 		}
 	}
 
 	if client.Token != nil {
+		client.mu.Lock()
 		if !time.Now().Before(client.Token.TokenExpiry) {
-			if err := client.RefreshAccessToken(reqCfg.ReqCtx); err != nil {
-				return err
+			if err := client.RefreshAccessToken(ctx); err != nil {
+				client.mu.Unlock()
+				return fmt.Errorf("refreshing access token: %w", err)
 			}
 		}
+		client.mu.Unlock()
 		req.Header.Set("X-Auth-Token", client.Token.AccessToken)
 	}
 	
@@ -92,9 +98,13 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 		if err == nil {
 			break
 		}
-		slog.Error("request attempt failed", "attempt", attempt, "err", err)
-		if attempt == 5{
-			return internal.HttpErrorHandler(resp)
+		fmt.Println("request attempt failed", "attempt", attempt, "err", err)
+		if attempt == maxAttempts{
+			return fmt.Errorf("request failed %w, attempts: %d", err, maxAttempts)
+		}
+
+		if ctx.Err() != nil {
+			return fmt.Errorf("request aborted by context: %w", ctx.Err())
 		}
 		jitter()
  	}
@@ -106,26 +116,26 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 	}
 
 	if b.ReqToFile != nil {
-		reqCfg.ReqToFile = *b.ReqToFile
-		bytes, err := io.ReadAll(resp.Body)
+		f, err := os.OpenFile(*b.ReqToFile, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 		if err != nil {
-			return err
+			return fmt.Errorf("opening file: %w", err)
 		}
-		err = os.WriteFile(reqCfg.ReqToFile, bytes, 0644)
-		if err != nil {
-		    fmt.Printf("Error writing file: %v\n", err)
+		defer f.Close()
+
+		if _, err := io.Copy(f, resp.Body); err != nil {
+			return fmt.Errorf("writing response to file: %w", err)
 		}
-		return nil
+		return f.Close()
 	}
 
 	if b.ReqToJson != nil {
-		reqCfg.ReqToJson = *b.ReqToJson
+		data := *b.ReqToJson
 		bytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return err
+			return fmt.Errorf("reading response: %w", err)
 		}
-		if err := json.Unmarshal(bytes, &reqCfg.ReqToJson); err != nil {
-			return err
+		if err := json.Unmarshal(bytes, data); err != nil {
+			return fmt.Errorf("unmarshalling response: %w", err)
 		}
 		return nil
 	}
@@ -159,7 +169,7 @@ func (client *Client) RefreshAccessToken(ctx context.Context) error {
 }
 
 func jitter(){
-	time.Sleep(time.Millisecond*time.Duration(randRange(1, 25)))
+	time.Sleep(time.Millisecond*time.Duration(randRange(100, 1000)))
 }
 
 func randRange(min, max int) int {
