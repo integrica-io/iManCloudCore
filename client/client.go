@@ -167,8 +167,8 @@ func (client *Client) RefreshAccessToken(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("request do: %w", err)
 	}
-	resp.Body.Close()
-
+	defer resp.Body.Close()
+	
 	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !respOk {
 		response := *resp
