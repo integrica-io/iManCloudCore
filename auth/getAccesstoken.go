@@ -1,8 +1,12 @@
 package auth
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"net/url"
 	"time"
 
@@ -38,14 +42,33 @@ func GetAccessToken(ctx context.Context, client *client.Client) error {
 		data.Set("assertion", client.TokenCfg.Assertion)
 	}
 
-	req := internal.HttpRequestBuilder{}
+	dataReader := bytes.NewReader([]byte(data.Encode()))
+	//req := internal.HttpRequestBuilder{}
+	req, err := http.NewRequestWithContext(ctx, "POST", endpoint.String(), dataReader)
+	if err != nil {
+		return fmt.Errorf("new request: %w", err)
+	}
 
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("request do: %w", err)
+	}
+	resp.Body.Close()
+	
+	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
+	if !respOk {
+		return internal.HttpErrorHandler(resp)
+	}
+	
 	var GetAccesstokenOutput types.Token
 
-	req.Context(ctx).Url(*endpoint).Method(internal.Post).ToJson(&GetAccesstokenOutput).Form(data)
-
-	if err := client.Req(req); err != nil {
-		return err
+	respReader, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("resp reader: %w", err)
+	}
+	
+	if err := json.Unmarshal(respReader, &GetAccesstokenOutput); err != nil {
+		return fmt.Errorf("resp unmarshal: %w", err)
 	}
 
 	client.Token = &GetAccesstokenOutput

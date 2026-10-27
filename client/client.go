@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"math/rand/v2"
+	"log/slog"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 	"sync"
 	"time"
 
@@ -38,106 +38,111 @@ func NewClient(hostname string, clientCfg *types.AccessTokenCfg) (*Client, error
 }
 
 func (client *Client) Req(b internal.HttpRequestBuilder) error {
-	reqClient := &http.Client{}
-
 	if b.ReqCtx == nil || *b.ReqCtx == nil {
 		return fmt.Errorf("context required")
 	}
 	ctx := *b.ReqCtx
 
 	if b.ReqUrl == nil {
-		return fmt.Errorf("Url required")
+		return fmt.Errorf("url required")
 	}
 
 	if b.ReqMethod == nil {
-		return fmt.Errorf("Method required")
+		return fmt.Errorf("method required")
 	}
-	
-	var bodyReader io.Reader = http.NoBody
+
+	var bodyBytes []byte
 	var contentType string
 
 	switch {
 	case b.ReqForm != nil:
-		bodyReader = strings.NewReader(b.ReqForm.Encode())
+		bodyBytes = []byte(b.ReqForm.Encode())
 		contentType = "application/x-www-form-urlencoded"
 	case b.ReqBody != nil:
-		bodyReader = bytes.NewReader(*b.ReqBody)
+		bodyBytes = *b.ReqBody
 	}
 
-	req, err := http.NewRequestWithContext(ctx, string(*b.ReqMethod), b.ReqUrl.String(), bodyReader)
-		if err != nil {
-			return fmt.Errorf("creating request: %w", err)
-	}
-
-	if contentType != "" {
-			req.Header.Set("Content-Type", contentType)
-	}
-
-	if b.ReqHeaders != nil {
-		for i, v := range *b.ReqHeaders {
-			req.Header.Set(i, v)
-		}
-	}
-
+	var accessToken string
+	client.mu.Lock()
 	if client.Token != nil {
-		client.mu.Lock()
 		if !time.Now().Before(client.Token.TokenExpiry) {
 			if err := client.RefreshAccessToken(ctx); err != nil {
 				client.mu.Unlock()
 				return fmt.Errorf("refreshing access token: %w", err)
 			}
 		}
-		client.mu.Unlock()
-		req.Header.Set("X-Auth-Token", client.Token.AccessToken)
+		accessToken = client.Token.AccessToken
 	}
+	client.mu.Unlock()
 	
+	reqClient := &http.Client{}
 	maxAttempts := 5
 	var resp *http.Response
  	for attempt := 1; attempt <= maxAttempts; attempt++ {
+  		var bodyReader io.Reader = http.NoBody
+    	if len(bodyBytes) > 0 {
+     		bodyReader = bytes.NewReader(bodyBytes)
+     	}
+  
+		req, err := http.NewRequestWithContext(ctx, string(*b.ReqMethod), b.ReqUrl.String(), bodyReader)
+		if err != nil {
+			return fmt.Errorf("creating request: %w", err)
+		}
+
+		if accessToken != "" {
+			req.Header.Set("X-Auth-Token", accessToken)
+		}
+				
+		if contentType != "" {
+				req.Header.Set("Content-Type", contentType)
+		}
+		
+		if b.ReqHeaders != nil {
+			for i, v := range *b.ReqHeaders {
+				req.Header.Set(i, v)
+			}
+		}
+		
 		resp, err = reqClient.Do(req)
 		if err == nil {
 			break
 		}
-		fmt.Println("request attempt failed", "attempt", attempt, "err", err)
-		if attempt == maxAttempts{
-			return fmt.Errorf("request failed %w, attempts: %d", err, maxAttempts)
-		}
+  	
+		if attempt == maxAttempts {
+        	return fmt.Errorf("retries exhausted: %w", err)
+        }
+	
+		slog.Error("request attempt failed, attempt: ", attempt, "err: ", err)
 
-		if ctx.Err() != nil {
-			return fmt.Errorf("request aborted by context: %w", ctx.Err())
-		}
-		jitter()
+		delay := jitter(backoff(attempt))
+		
+		select {
+        case <-time.After(delay):
+        case <-ctx.Done():
+            return ctx.Err()
+        }
+
+
  	}
-  	defer resp.Body.Close()
-  
+  	defer func(){
+   		_, _ = io.Copy(io.Discard, resp.Body)
+   		resp.Body.Close()
+   	}()
+   
 	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !respOk {
 		return internal.HttpErrorHandler(resp)
 	}
 
-	if b.ReqToFile != nil {
-		f, err := os.OpenFile(*b.ReqToFile, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
-		if err != nil {
-			return fmt.Errorf("opening file: %w", err)
-		}
-		defer f.Close()
-
-		if _, err := io.Copy(f, resp.Body); err != nil {
-			return fmt.Errorf("writing response to file: %w", err)
-		}
-		return f.Close()
-	}
-
-	if b.ReqToJson != nil {
-		data := *b.ReqToJson
-		bytes, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return fmt.Errorf("reading response: %w", err)
-		}
-		if err := json.Unmarshal(bytes, data); err != nil {
-			return fmt.Errorf("unmarshalling response: %w", err)
-		}
-		return nil
+	switch {
+		case b.ReqToFile != nil:
+			if err := requestToFile(*b.ReqToFile, resp.Body); err != nil {
+				return fmt.Errorf("sending request to file: %w", err)
+			}
+		case b.ReqToJson != nil:
+			if err := requestToJson(*b.ReqToJson, resp.Body); err != nil{
+				return fmt.Errorf("unmarshalling to struct: %w", err)
+			}	
 	}
 	return nil
 }
@@ -152,14 +157,31 @@ func (client *Client) RefreshAccessToken(ctx context.Context) error {
 	data.Set("grant_type", "refresh_token")
 	data.Set("refresh_token", client.Token.RefreshToken)
 
-	req := internal.HttpRequestBuilder{}
+	dataReader := bytes.NewReader([]byte(data.Encode()))
+	req, err := http.NewRequestWithContext(ctx, "POST", endpoint.String(), dataReader)
+	if err != nil {
+		return fmt.Errorf("new request: %w", err)
+	}
 
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("request do: %w", err)
+	}
+	resp.Body.Close()
+
+	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
+	if !respOk {
+		return internal.HttpErrorHandler(resp)
+	}
+
+	respReader, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("read response: %w", err)
+	}
+	
 	var GetAccesstokenOutput types.Token
-
-	req.Context(ctx).Url(*endpoint).Method(internal.Post).ToJson(&GetAccesstokenOutput).Form(data)
-
-	if err := client.Req(req); err != nil {
-		return err
+	if err := json.Unmarshal(respReader, &GetAccesstokenOutput); err != nil {
+		return fmt.Errorf("unmarshal response: %w", err)
 	}
 
 	client.Token = &GetAccesstokenOutput
@@ -168,10 +190,42 @@ func (client *Client) RefreshAccessToken(ctx context.Context) error {
 	return nil
 }
 
-func jitter(){
-	time.Sleep(time.Millisecond*time.Duration(randRange(100, 1000)))
+func requestToJson(structPointer any, body io.Reader) error {
+	bytes, err := io.ReadAll(body)
+	if err != nil {
+		return fmt.Errorf("reading response: %w", err)
+	}
+	if err := json.Unmarshal(bytes, structPointer); err != nil {
+		return fmt.Errorf("unmarshalling response: %w", err)
+	}
+	return nil
 }
 
-func randRange(min, max int) int {
-    return rand.IntN(max-min) + min
+func requestToFile(filename string, body io.Reader) error {
+
+	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("opening file: %w", err)
+	}
+	defer f.Close()
+
+	if _, err := io.Copy(f, body); err != nil {
+		return fmt.Errorf("writing response to file: %w", err)
+	}
+	return f.Close()
+}
+
+func jitter(d time.Duration) time.Duration {
+    return time.Duration(rand.Int63n(int64(d)))
+}
+
+func backoff(attempt int) time.Duration {
+    base := 100 * time.Millisecond
+    max := 5 * time.Second
+
+    d := time.Duration(1<<attempt) * base
+    if d > max {
+        return max
+    }
+    return d
 }
