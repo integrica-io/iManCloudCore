@@ -57,7 +57,8 @@ func GetAccessToken(ctx context.Context, client *client.Client) error {
 	
 	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !respOk {
-		return internal.HttpErrorHandler(resp)
+		response := *resp
+		return internal.HttpErrorHandler(response)
 	}
 	
 	var GetAccesstokenOutput types.Token

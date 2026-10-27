@@ -121,9 +121,8 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
         case <-ctx.Done():
             return ctx.Err()
         }
-
-
  	}
+  
   	defer func(){
    		_, _ = io.Copy(io.Discard, resp.Body)
    		resp.Body.Close()
@@ -131,7 +130,8 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
    
 	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !respOk {
-		return internal.HttpErrorHandler(resp)
+		response := *resp
+		return internal.HttpErrorHandler(response)
 	}
 
 	switch {
@@ -171,7 +171,8 @@ func (client *Client) RefreshAccessToken(ctx context.Context) error {
 
 	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !respOk {
-		return internal.HttpErrorHandler(resp)
+		response := *resp
+		return internal.HttpErrorHandler(response)
 	}
 
 	respReader, err := io.ReadAll(resp.Body)
