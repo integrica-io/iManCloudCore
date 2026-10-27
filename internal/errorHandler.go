@@ -9,7 +9,7 @@ import (
 	"github.com/integrica-io/iManCloudCore/types"
 )
 
-func HttpErrorHandler(resp *http.Response) error {
+func HttpErrorHandler(resp http.Response) error {
 	errorResp := new(types.ErrorResponse)
 	reader, err := io.ReadAll(resp.Body)
 	if err != nil {
