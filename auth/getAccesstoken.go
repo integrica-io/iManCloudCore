@@ -41,9 +41,7 @@ func GetAccessToken(ctx context.Context, client *client.Client) error {
 	case types.Saml2Bearer:
 		data.Set("assertion", client.TokenCfg.Assertion)
 	}
-
-	fmt.Println(data.Encode())
-	fmt.Println(endpoint.String())
+	
 	dataReader := bytes.NewReader([]byte(data.Encode()))
 	//req := internal.HttpRequestBuilder{}
 	req, err := http.NewRequestWithContext(ctx, "POST", endpoint.String(), dataReader)
