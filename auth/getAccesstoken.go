@@ -42,6 +42,8 @@ func GetAccessToken(ctx context.Context, client *client.Client) error {
 		data.Set("assertion", client.TokenCfg.Assertion)
 	}
 
+	fmt.Println(data.Encode())
+	fmt.Println(endpoint.String())
 	dataReader := bytes.NewReader([]byte(data.Encode()))
 	//req := internal.HttpRequestBuilder{}
 	req, err := http.NewRequestWithContext(ctx, "POST", endpoint.String(), dataReader)
@@ -58,6 +60,11 @@ func GetAccessToken(ctx context.Context, client *client.Client) error {
 	respOk := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !respOk {
 		response := *resp
+		respReader, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("resp reader: %w", err)
+		}
+		fmt.Printf("Status: %d, response: %s", resp.StatusCode, string(respReader))
 		return internal.HttpErrorHandler(response)
 	}
 	
