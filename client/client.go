@@ -162,6 +162,7 @@ func (client *Client) RefreshAccessToken(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("new request: %w", err)
 	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
