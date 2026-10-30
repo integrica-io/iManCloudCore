@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"sync"
 	"time"
 
@@ -111,8 +112,8 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 		if attempt == maxAttempts {
         	return fmt.Errorf("retries exhausted: %w", err)
         }
-	
-		slog.Error("request attempt failed, attempt: ", attempt, "err: ", err)
+
+		slog.Error("request attempt failed, attempt: ", strconv.Itoa(attempt), "err: ", err)
 
 		delay := jitter(backoff(attempt))
 		
