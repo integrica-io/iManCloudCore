@@ -113,7 +113,7 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
         	return fmt.Errorf("retries exhausted: %w", err)
         }
 
-		slog.Error("request attempt failed, attempt: ", strconv.Itoa(attempt), "err: ", err)
+		slog.Error("request attempt failed", "attemptNo", attempt, "err", err)
 
 		delay := jitter(backoff(attempt))
 		
