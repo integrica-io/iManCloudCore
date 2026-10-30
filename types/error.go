@@ -21,10 +21,9 @@ type errorMessage struct {
 type HttpError struct {
 	Status      int
 	Code        string
-	CodeMessage string
-	Messages    []errorMessage
+	RawString	string
 }
 
 func (e *HttpError) Error() error {
-	return fmt.Errorf("status: %d, code: %s, codeMessage: %s, messages: %s", e.Status, e.Code, e.CodeMessage, e.Messages)
+	return fmt.Errorf("status: %d, code: %s, messages: %s", e.Status, e.Code, e.RawString)
 }
