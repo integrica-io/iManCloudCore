@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -15,14 +14,10 @@ func HttpErrorHandler(resp http.Response) error {
 	if err != nil {
 		return fmt.Errorf("HttpErrorHandler, Reader, %s", err)
 	}
-	if err := json.Unmarshal(reader, errorResp); err != nil {
-		return fmt.Errorf("HttpErrorHandler, Unmarshal, %s", err)
-	}
 	errStruct := types.HttpError{
-		Status:      resp.StatusCode,
-		Code:        errorResp.Error.Code,
-		CodeMessage: errorResp.Error.CodeMessage,
-		Messages:    errorResp.Error.Messages,
+		Status:     resp.StatusCode,
+		Code:       errorResp.Error.Code,
+		RawString: 	string(reader),
 	}
 	return errStruct.Error()
 }
