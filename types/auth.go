@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"fmt"
 	"time"
 )
@@ -42,7 +43,7 @@ func (grant GrantType) IsValid() bool {
 
 func (cfg *AccessTokenCfg) IsValid() error {
 	if cfg.Grant == "" {
-		return fmt.Errorf("empty grant type")
+		return errors.New("empty grant type")
 	}
 
 	if cfg.Grant != RefreshToken {

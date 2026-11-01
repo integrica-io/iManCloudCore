@@ -18,12 +18,12 @@ type errorMessage struct {
 	CodeMessage string `json:"code_message"`
 }
 
-type HttpError struct {
+type HTTPError struct {
 	Status      int
 	Code        string
 	RawString	string
 }
 
-func (e *HttpError) Error() error {
-	return fmt.Errorf("status: %d, code: %s, messages: %s", e.Status, e.Code, e.RawString)
+func (e *HTTPError) Error() string {
+	return fmt.Sprintf("HTTP %d: %s", e.Status, e.RawString)
 }

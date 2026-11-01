@@ -13,7 +13,7 @@ type GetAccessTokenOutput struct {
 	} `json:"data"`
 }
 
-func GetAccessToken(ctx context.Context, client *client.Client, dialogToken string) (GetAccessTokenOutput, error) {
+func GetAccessToken(ctx context.Context, client *client.Client, dialogToken string) (*GetAccessTokenOutput, error) {
 	var data GetAccessTokenOutput
 	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "dialog-tokens", dialogToken)
 
@@ -21,8 +21,8 @@ func GetAccessToken(ctx context.Context, client *client.Client, dialogToken stri
 	req.Context(ctx).Url(*endpoint).Method(internal.Get).ToJson(&data)
 
 	if err := client.Req(req); err != nil {
-		return data, err
+		return nil, err
 	}
 
-	return data, nil
+	return &data, nil
 }

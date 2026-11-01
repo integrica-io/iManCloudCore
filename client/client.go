@@ -13,6 +13,7 @@ import (
 	"os"
 	"sync"
 	"time"
+	"errors"
 
 	"github.com/integrica-io/iManCloudCore/internal"
 	"github.com/integrica-io/iManCloudCore/types"
@@ -38,6 +39,10 @@ func NewClient(hostname string, clientCfg *types.AccessTokenCfg) (*Client, error
 }
 
 func (client *Client) Req(b internal.HttpRequestBuilder) error {
+	if err := ValidateClient(client); err != nil {
+		return fmt.Errorf("client config invalid: %w", err)
+	}
+	
 	if b.ReqCtx == nil || *b.ReqCtx == nil {
 		return fmt.Errorf("context required")
 	}
@@ -230,4 +235,14 @@ func backoff(attempt int) time.Duration {
         return max
     }
     return d
+}
+
+func ValidateClient(c *Client) error {
+	if c == nil || c.BaseUrl == nil {
+			return errors.New("client, base URL, and token config must not be nil")
+		}
+	if c.TokenCfg.CustomerId == "" {
+			return errors.New("customer ID must not be empty")
+	}
+	return nil
 }
