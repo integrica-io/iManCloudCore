@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,15 +10,16 @@ import (
 )
 
 func HttpErrorHandler(resp http.Response) error {
-	errorResp := new(types.ErrorResponse)
+	defer resp.Body.Close()
 	reader, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("HttpErrorHandler, Reader, %s", err)
 	}
-	errStruct := types.HttpError{
+	var errResp types.ErrorResponse
+	_ = json.Unmarshal(reader, &errResp)
+	
+	return &types.HTTPError{
 		Status:     resp.StatusCode,
-		Code:       errorResp.Error.Code,
 		RawString: 	string(reader),
 	}
-	return errStruct.Error()
 }
