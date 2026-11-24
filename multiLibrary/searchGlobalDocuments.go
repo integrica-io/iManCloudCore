@@ -11,10 +11,87 @@ import (
 
 type SearchGlobalDocumentsOutput struct {
 	Data []struct {
-		ID           string    `json:"id"`
-		Wstype       string    `json:"wstype"`
-		Name         string    `json:"name"`
-		FileEditDate time.Time `json:"file_edit_date"`
+		Access            string `json:"access"`
+		Author            string `json:"author"`
+		AuthorDescription string `json:"author_description"`
+		AuthorInfo        struct {
+			AllowLogon bool `json:"allow_logon"`
+			IsExternal bool `json:"is_external"`
+		} `json:"author_info"`
+		Class               string    `json:"class"`
+		CreateDate          time.Time `json:"create_date"`
+		Custom1             string    `json:"custom1"`
+		Custom1Description  string    `json:"custom1_description"`
+		Custom2             string    `json:"custom2"`
+		Custom25            bool      `json:"custom25"`
+		Custom26            bool      `json:"custom26"`
+		Custom27            bool      `json:"custom27"`
+		Custom28            bool      `json:"custom28"`
+		Custom29            string    `json:"custom29"`
+		Custom29Description string    `json:"custom29_description"`
+		Custom2Description  string    `json:"custom2_description"`
+		Custom3             string    `json:"custom3"`
+		Custom30            string    `json:"custom30"`
+		Custom30Description string    `json:"custom30_description"`
+		Custom3Description  string    `json:"custom3_description"`
+		Custom4             string    `json:"custom4"`
+		Custom4Description  string    `json:"custom4_description"`
+		Database            string    `json:"database"`
+		DefaultSecurity     string    `json:"default_security"`
+		DocumentNumber      int       `json:"document_number"`
+		EditDate            time.Time `json:"edit_date"`
+		EditProfileDate     time.Time `json:"edit_profile_date"`
+		Extension           string    `json:"extension"`
+		FileCreateDate      time.Time `json:"file_create_date"`
+		FileEditDate        time.Time `json:"file_edit_date"`
+		HasAttachment       bool      `json:"has_attachment"`
+		ID                  string    `json:"id"`
+		IsInUse             bool      `json:"is_in_use"`
+		IsDeclared          bool      `json:"is_declared"`
+		IsCheckedOut        bool      `json:"is_checked_out"`
+		IsHipaa             bool      `json:"is_hipaa"`
+		IsRestorable        bool      `json:"is_restorable"`
+		Iwl                 string    `json:"iwl"`
+		LastUser            string    `json:"last_user"`
+		LastUserDescription string    `json:"last_user_description"`
+		LastUserInfo        struct {
+			AllowLogon bool `json:"allow_logon"`
+			IsExternal bool `json:"is_external"`
+		} `json:"last_user_info"`
+		Name       string `json:"name"`
+		Operations struct {
+			Archive          bool `json:"archive"`
+			Copy             bool `json:"copy"`
+			CreateNewVersion bool `json:"create_new_version"`
+			Declare          bool `json:"declare"`
+			Delete           bool `json:"delete"`
+			Freeze           bool `json:"freeze"`
+			Lock             bool `json:"lock"`
+			Move             bool `json:"move"`
+			Relate           bool `json:"relate"`
+			Replace          bool `json:"replace"`
+			Restore          bool `json:"restore"`
+			SetSecurity      bool `json:"set_security"`
+			Undeclare        bool `json:"undeclare"`
+			Unfreeze         bool `json:"unfreeze"`
+			Unlock           bool `json:"unlock"`
+			Update           bool `json:"update"`
+		} `json:"operations"`
+		Operator            string `json:"operator"`
+		OperatorDescription string `json:"operator_description"`
+		OperatorInfo        struct {
+			AllowLogon bool `json:"allow_logon"`
+			IsExternal bool `json:"is_external"`
+		} `json:"operator_info"`
+		Size                int      `json:"size"`
+		Type                string   `json:"type"`
+		Version             int      `json:"version"`
+		WorkspaceID         string   `json:"workspace_id"`
+		Wstype              string   `json:"wstype"`
+		LockType            string   `json:"lock_type"`
+		CoAuthors           []string `json:"co_authors"`
+		WopiFileSizeLimit   int      `json:"wopi_file_size_limit"`
+		WopiFileSizeWarning bool     `json:"wopi_file_size_warning"`
 	} `json:"data"`
 	Overflow bool `json:"overflow"`
 }
@@ -50,8 +127,8 @@ type DocumentSearchFilters struct {
 	Comments        string `json:"comments,omitempty"`
 	Alias           string `json:"alias,omitempty"`
 	Type            string `json:"type,omitempty"`
-	DocumentNumber  any    `json:"document_number,omitempty"`  // string (e.g. "123,124") or int
-	DocumentVersion any    `json:"document_version,omitempty"` // string (e.g. "1,2") or int
+	DocumentNumber  string `json:"document_number,omitempty"`  // string (e.g. "123,124") or int
+	DocumentVersion string `json:"document_version,omitempty"` // string (e.g. "1,2") or int
 
 	// Users
 	User     string `json:"user,omitempty"`
