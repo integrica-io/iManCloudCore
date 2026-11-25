@@ -88,6 +88,8 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
     	if len(bodyBytes) > 0 {
      		bodyReader = bytes.NewReader(bodyBytes)
      	}
+
+      	fmt.Println(string(bodyBytes))
   
 		req, err := http.NewRequestWithContext(ctx, string(*b.ReqMethod), b.ReqUrl.String(), bodyReader)
 		if err != nil {
