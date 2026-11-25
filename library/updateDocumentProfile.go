@@ -3,6 +3,7 @@ package library
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/integrica-io/iManCloudCore/client"
@@ -155,7 +156,7 @@ type FieldWarning struct {
 
 func UpdateDocumentProfile(ctx context.Context, client *client.Client, libraryId string, docId string, options UpdateDocumentProfileOptions)(UpdateDocumentProfileOutput, error){
 	var data UpdateDocumentProfileOutput
-	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "documents", docId)
+	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "libraries", libraryId, "documents", fmt.Sprintf("%s!%s", libraryId, docId))
 
 	bytes, err := json.Marshal(options)
 	if err != nil {
