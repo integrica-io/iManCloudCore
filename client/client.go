@@ -65,6 +65,7 @@ func (client *Client) Req(b internal.HttpRequestBuilder) error {
 		contentType = "application/x-www-form-urlencoded"
 	case b.ReqBody != nil:
 		bodyBytes = *b.ReqBody
+		contentType = "application/json"
 	}
 
 	var accessToken string
