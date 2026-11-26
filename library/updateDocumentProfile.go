@@ -166,8 +166,6 @@ func UpdateDocumentProfile(ctx context.Context, client *client.Client, libraryId
 	req := internal.HttpRequestBuilder{}
 	req.Context(ctx).Url(*endpoint).Method(internal.Patch).ToJson(&data).Body(bytes)
 
-	fmt.Println(req)
-
 	if err := client.Req(req); err != nil {
 		return data, err
 	}
