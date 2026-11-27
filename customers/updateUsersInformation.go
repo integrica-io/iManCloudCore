@@ -44,7 +44,7 @@ type UpdateUsersInformationResponse struct {
 	} `json:"data"`
 }
 
-func UpdateDocumentProfile(ctx context.Context, client *client.Client, userId string, options UpdateUsersInformationOptions)(UpdateUsersInformationResponse, error){
+func UpdateUsersInformation(ctx context.Context, client *client.Client, userId string, options UpdateUsersInformationOptions)(UpdateUsersInformationResponse, error){
 	var data UpdateUsersInformationResponse
 	endpoint := client.BaseUrl.JoinPath("work", "api", "v2", "customers", client.TokenCfg.CustomerId, "users", userId)
 
